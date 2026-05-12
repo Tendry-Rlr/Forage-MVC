@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/ressources/script.js" defer></script>
+    <title>Modification demande</title>
+</head>
+
+<body>
+    <h1>Modifier cette demande</h1>
+
+    <form th:action="@{/update}" method="post">
+        <p>Client
+            <select name="clientId">
+                <option value="">-- Sélectionnez un client --</option>
+                <option th:each="client : ${clients}" th:value="${client.getId_client()}"
+                    th:text="${client.getNom_client()}"
+                    th:selected="${client.getId_client()} == ${demande.getClient().getId_client()}">
+                </option>
+            </select>
+        </p>
+
+        <p>Region
+            <select name="region" id="regionSelect">
+                <option th:each=" region : ${regions}" th:value="${region.getId_region()}"
+                    th:text="${region.getLibelle()}">
+                </option>
+            </select>
+        </p>
+
+        <p>District
+            <select id="districtSelect">
+                <option value="">-- Sélectionnez un district --</option>
+                <option th:each=" district : ${districts}" th:value="${district.getId_district()}"
+                    th:text="${district.getLibelle()}">
+                </option>
+            </select>
+        </p>
+
+        <p>Commune
+            <select name="communeId" id="communeSelect">
+                <option value="">-- Sélectionnez une commune --</option>
+                <option th:each="commune : ${communes}" th:value="${commune.getId_commune()}"
+                    th:text="${commune.getLibelle()}"
+                    th:selected="${commune.getId_commune()} == ${demande.getCommune().getId_commune()}">
+                </option>
+            </select>
+        </p>
+
+        <p>Statut
+            <select name="id_statut">
+                <option value="">-- Sélectionnez un statut --</option>
+                <option th:each="statut : ${statuts}" th:value="${statut.getId_statut()}"
+                    th:text="${statut.getLibelle()}"
+                    th:selected="${statut.getId_statut()} == ${demande_statut.getId_demande_statut()}">
+                </option>
+            </select>
+        </p>
+
+        <p>Lieu <input type="text" name="lieu" th:value="${demande.getLieu()}"></p>
+        <p>Date <input type="datetime-local" name="date" th:value="${demande_statut.getDate()}"></p>
+
+        <input type="hidden" name="id_demande" th:value="${demande.getId_demande()}">
+        <input type="hidden" name="id_demande_statut" th:value="${demande_statut.getId_demande_statut()}">
+
+        <input type="submit" value="Enregister ma demande">
+    </form>
+</body>
+
+</html>

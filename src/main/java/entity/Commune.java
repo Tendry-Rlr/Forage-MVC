@@ -1,5 +1,7 @@
 package entity;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -9,11 +11,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "commune")
 public class Commune {
+    public Commune() {
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_commune")
@@ -26,6 +32,9 @@ public class Commune {
     @JoinColumn(name = "id_district", nullable = false)
     @JsonIgnore
     private District district;
+
+    @OneToMany(mappedBy = "commune")
+    private List<Demande> demandes;
 
     public int getId_commune() {
         return id_commune;
@@ -41,6 +50,10 @@ public class Commune {
 
     public void setLibelle(String libelle) {
         this.libelle = libelle;
+    }
+
+    public void setDemandes(List<Demande> demandes) {
+        this.demandes = demandes;
     }
 
     public District getDistrict() {

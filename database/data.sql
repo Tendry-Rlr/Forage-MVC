@@ -28,3 +28,5 @@ insert into statut(libelle) VALUES
 ('Devis decline'),
 ('Debut Forage'),
 ('Fin Forage');
+
+

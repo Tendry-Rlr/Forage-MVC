@@ -24,4 +24,28 @@ public class Statut {
     @OneToMany(mappedBy = "statut")
     List<DemandeStatut> demandeStatuts;
 
+    public int getId_statut() {
+        return id_statut;
+    }
+
+    public void setId_statut(int id_statut) {
+        this.id_statut = id_statut;
+    }
+
+    public String getLibelle() {
+        return libelle;
+    }
+
+    public void setLibelle(String libelle) {
+        this.libelle = libelle;
+    }
+
+    public List<DemandeStatut> getDemandeStatuts() {
+        return demandeStatuts;
+    }
+
+    public void setDemandeStatuts(List<DemandeStatut> demandeStatuts) {
+        this.demandeStatuts = demandeStatuts;
+    }
+
 }

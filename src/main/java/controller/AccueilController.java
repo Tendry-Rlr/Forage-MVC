@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import entity.District;
 import entity.Commune;
+import entity.Demande;
+import entity.DemandeStatut;
 import service.*;
 
 @Controller
@@ -35,9 +37,12 @@ public class AccueilController {
         model.addAttribute("districts", this.districtService.findAll());
         model.addAttribute("communes", this.communeService.findAll());
         
+        model.addAttribute("demande", new Demande());
+        model.addAttribute("demandeStatut", new DemandeStatut());
+
         return "index";
     }
-
+    
     @GetMapping("/districts/{id_region}")
     @ResponseBody
     public List<District> getDistrictsByRegion(@PathVariable("id_region") Integer regionId) {

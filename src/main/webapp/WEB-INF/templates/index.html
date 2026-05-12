@@ -4,15 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/ressources/script.js" defer></script>
     <title>Title</title>
 </head>
 
 <body>
     <h4>Insertion de demande</h4>
 
-    <form th:action="@{/insertDemande}" method="post">
+    <form th:action="@{/insertDemande}" th:object="${demande}" method="post">
         <p>Client
-            <select name="client">
+            <select name="clientId">
+                <option value="">-- Sélectionnez un client --</option>
                 <option th:each=" client : ${clients}" th:value="${client.getId_client()}"
                     th:text="${client.getNom_client()}">
                 </option>
@@ -28,7 +30,8 @@
         </p>
 
         <p>District
-            <select name="district" id="districtSelect">
+            <select id="districtSelect">
+                <option value="">-- Sélectionnez un district --</option>
                 <option th:each=" district : ${districts}" th:value="${district.getId_district()}"
                     th:text="${district.getLibelle()}">
                 </option>
@@ -36,89 +39,21 @@
         </p>
 
         <p>Commune
-            <select name="commune" id="communeSelect">
+            <select name="communeId" id="communeSelect">
+                <option value="">-- Sélectionnez une commune --</option>
                 <option th:each=" commune : ${communes}" th:value="${commune.getId_commune()}"
                     th:text="${commune.getLibelle()}">
                 </option>
             </select>
         </p>
 
-        <p>Lieu <input type="text" name="lieu"></p>
+        <p>Lieu <input type="text" name="lieu" th:field="*{lieu}" required></p>
         <p>Date <input type="datetime-local" name="date"></p>
+
         <input type="submit" value="Enregister ma demande">
     </form>
 
-    <script>
-        //traitement district dynamique
-        document.getElementById('regionSelect').addEventListener('change', function () {
-            const regionId = this.value;
-            const districtSelect = document.getElementById('districtSelect');
-
-            // 1. On vide la liste actuelle
-            districtSelect.innerHTML = '<option value="">-- Chargement... --</option>';
-
-            if (regionId) {
-                const url = window.location.pathname.replace(/\/[^\/]*$/, '') + '/districts/' + regionId
-                // 2. Appel à l'API de votre contrôleur Spring MVC
-                fetch(url)
-                    .then(response => {
-                        if (!response.ok) throw new Error('HTTP error ' + response.status);
-                        return response.json();
-                    })
-
-                    .then(districts => {
-                        // 3. On vide à nouveau le message de chargement
-                        districtSelect.innerHTML = '<option value="">-- Sélectionnez un district --</option>';
-
-                        // 4. On ajoute les nouveaux districts
-                        districts.forEach(district => {
-                            const option = document.createElement('option');
-                            option.value = district.id_district;
-                            option.textContent = district.libelle;
-                            districtSelect.appendChild(option);
-                        });
-                    });
-            } else {
-                districtSelect.innerHTML = '<option value="">-- Attente de région --</option>';
-            }
-        });
-
-        //traitement commune dynamique
-        document.getElementById('districtSelect').addEventListener('change', function () {
-            const regionId = this.value;
-            const communeSelect = document.getElementById('communeSelect');
-
-            // 1. On vide la liste actuelle
-            communeSelect.innerHTML = '<option value="">-- Chargement... --</option>';
-
-            if (regionId) {
-                const url = window.location.pathname.replace(/\/[^\/]*$/, '') + '/communes/' + regionId
-                // 2. Appel à l'API de votre contrôleur Spring MVC
-                fetch(url)
-                    .then(response => {
-                        if (!response.ok) throw new Error('HTTP error ' + response.status);
-                        return response.json();
-                    })
-
-                    .then(communes => {
-                        // 3. On vide à nouveau le message de chargement
-                        communeSelect.innerHTML = '<option value="">-- Sélectionnez un commune --</option>';
-
-                        // 4. On ajoute les nouveaux communes
-                        communes.forEach(commune => {
-                            const option = document.createElement('option');
-                            option.value = commune.id_commune;
-                            option.textContent = commune.libelle;
-                            communeSelect.appendChild(option);
-                        });
-                    });
-            } else {
-                communeSelect.innerHTML = '<option value="">-- Attente de région --</option>';
-            }
-        });
-
-    </script>
-
+    <a th:href="@{/listeDemande}">Voir liste demande</a>
 </body>
 
 </html>

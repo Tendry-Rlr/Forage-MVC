@@ -33,7 +33,7 @@ public class District {
     @OneToMany(mappedBy = "district")
     @JsonIgnore
     List<Commune> communes;
-
+    
     public int getId_district() {
         return id_district;
     }

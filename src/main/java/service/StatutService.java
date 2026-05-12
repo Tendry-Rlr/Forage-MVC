@@ -23,4 +23,12 @@ public class StatutService {
     public List<Statut> findAll() {
         return repository.findAll();
     }
+
+    public Statut findByNom(String nom) {
+        return repository.findByLibelle(nom);
+    }
+
+    public Statut findById(Integer id) {
+        return repository.findById(id).orElse(null);
+    }
 }

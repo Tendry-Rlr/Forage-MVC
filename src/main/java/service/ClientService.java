@@ -24,4 +24,9 @@ public class ClientService {
         return clients.findAll();
     }
 
+    public Client findById(Integer id){
+        return clients.findById(id).orElse(null);
+    }
+    
+
 }

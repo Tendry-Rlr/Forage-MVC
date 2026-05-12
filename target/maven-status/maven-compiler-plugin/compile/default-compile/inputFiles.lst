@@ -16,6 +16,7 @@
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/repository/DistrictRepository.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/entity/DemandeStatut.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/repository/StatutRepository.java
+/home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/controller/DemandeController.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/service/CommuneService.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/entity/Commune.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/entity/Client.java

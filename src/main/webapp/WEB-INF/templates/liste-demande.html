@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste demande</title>
+</head>
+
+<body>
+    <h1>Liste des demandes</h1>
+
+    <table border="1">
+
+        <tr>
+            <td>Id demande</td>
+            <td>Client</td>
+            <td>Lieu</td>
+            <td>Date</td>
+            <td>Statut</td>
+            <td>Action1</td>
+            <td>Action2</td>
+        </tr>
+
+        <th:block th:each="demande : ${demandes}">
+            <tr th:each="demandeStatuts : ${demande.getDemandeStatuts()}">
+                <td th:text="${demande.getId_demande()}"></td>
+                <td th:text="${demande.getClient().getNom_client()}"></td>
+                <td th:text="${demande.getLieu()}"></td>
+                <td th:text="${demandeStatuts.getDate()}"></td>
+                <td th:text="${demandeStatuts.getStatut().getLibelle()}"></td>
+                <td><a th:href="@{/supprimer/{id}(id=${demande.getId_demande()})}">Supprimer</a></td>
+                <td><a th:href="@{/update/{id_demande}/{id_demande_statut}(id_demande=${demande.getId_demande()},id_demande_statut=${demandeStatuts.getId_demande_statut()})}">Modifier</a></td>
+            </tr>
+        </th:block>
+    </table>
+</body>
+
+</html>

@@ -27,4 +27,9 @@ public class CommuneService {
     public List<Commune> findByDistrict(Integer id_district) {
         return repository.findByDistrictId(id_district);
     }
+
+    public Commune findById(Integer id) 
+    {
+        return repository.findById(id).orElse(null);
+    }
 }

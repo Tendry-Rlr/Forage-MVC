@@ -1,6 +1,6 @@
 package entity;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,8 +20,8 @@ public class DemandeStatut {
     private int id_demande_statut;
 
     @Column(name = "date", nullable = false)
-    private Date date; 
-
+    private Timestamp date; 
+    
     @ManyToOne
     @JoinColumn(name = "id_demande", nullable = false)
     private Demande demande;
@@ -29,4 +29,36 @@ public class DemandeStatut {
     @ManyToOne
     @JoinColumn(name = "id_statut", nullable = false)
     private Statut statut;
+
+    public int getId_demande_statut() {
+        return id_demande_statut;
+    }
+
+    public void setId_demande_statut(int id_demande_statut) {
+        this.id_demande_statut = id_demande_statut;
+    }
+
+    public Timestamp getDate() {
+        return date;
+    }
+
+    public void setDate(Timestamp date) {
+        this.date = date;
+    }
+
+    public Demande getDemande() {
+        return demande;
+    }
+
+    public void setDemande(Demande demande) {
+        this.demande = demande;
+    }
+
+    public Statut getStatut() {
+        return statut;
+    }
+
+    public void setStatut(Statut statut) {
+        this.statut = statut;
+    }
 }

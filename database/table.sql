@@ -45,3 +45,9 @@ create table demande_statut(
     id_demande int,
     id_statut int
 );
+
+select d.*, ds.id_demande_statut, s.libelle, c.nom_client
+from demande d
+join client c on c.id_client = d.id_client
+join demande_statut ds on d.id_demande = ds.id_demande
+join statut s on s.id_statut = ds.id_statut;
