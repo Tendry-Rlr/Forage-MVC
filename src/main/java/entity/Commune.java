@@ -34,6 +34,7 @@ public class Commune {
     private District district;
 
     @OneToMany(mappedBy = "commune")
+    @JsonIgnore
     private List<Demande> demandes;
 
     public int getId_commune() {

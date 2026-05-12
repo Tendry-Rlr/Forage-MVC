@@ -1,6 +1,7 @@
 package entity;
 
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,7 +14,9 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "client")
 public class Client {
-        public Client() {}
+    public Client() {
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_client")
@@ -29,9 +32,9 @@ public class Client {
     private String adresse;
 
     @OneToMany(mappedBy = "client")
+    @JsonIgnore
     List<Demande> demandes;
-
-
+    
     public int getId_client() {
         return id_client;
     }

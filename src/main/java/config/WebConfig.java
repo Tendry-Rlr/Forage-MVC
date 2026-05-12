@@ -13,7 +13,6 @@ import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 @EnableWebMvc
 @ComponentScan(basePackages = {"controller"})
 public class WebConfig implements WebMvcConfigurer {
-    
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();

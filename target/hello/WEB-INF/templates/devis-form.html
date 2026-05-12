@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>devis</title>
+</head>
+
+<body>
+
+
+    <h1>Insertion de devis</h1>
+
+
+
+    <form th:action="@{/insert-devis}" method="post" id="formulaire">
+        <p>Demande <input type="number" name="id_demande" id="id_demande"></p>
+        <div id="info"></div>
+        <p>Type :
+            <select name="typeId" id="typeId">
+                <option value="">--Selectionnez un type --</option>
+                <option th:each="type : ${types}" th:value="${type.getId_type()}" th:text="${type.getLibelle()}">
+                </option>
+            </select>
+        </p>
+
+        <p>Date <input type="datetime-local" name="date_creation"></p>
+        <input type="submit" value="Enregistrer ce devis">
+    </form>
+
+    <button type="button" onclick="newDevis()">Ajout de champ</button>
+
+    <script>
+        document.getElementById('id_demande').addEventListener('blur', function () {
+            const demandeId = this.value.trim();
+
+            if (!demandeId) return;
+
+            const url = /*[[@{/demandeJSON/{id}(id=${0})}]]*/ ''
+                .replace('0', demandeId);
+
+            fetch(url)
+                .then(response => response.json())
+
+                .then(demande => {
+                    console.log(demande)
+                    const div = document.getElementById("info");
+                    div.innerHTML = "";
+
+                    const nomClient = document.createElement("p");
+                    nomClient.textContent = demande.client.nom_client;
+                    div.appendChild(nomClient);
+
+                    const lieu = document.createElement("p");
+                    lieu.textContent = demande.lieu;
+                    div.appendChild(lieu);
+                })
+                .catch(error => console.error(error));
+        });
+
+        function newDevis() {
+            const formulaire = document.getElementById("formulaire");
+            const div = document.createElement("div");
+
+            // Utilisation des backticks (`) pour le multi-ligne et l'index dynamique
+            div.innerHTML = `
+        <hr>
+        <p>
+            Nom : <input type="text" name="nom" required>
+            Prix Unitaire : <input type="number" name="pU" step="0.01" value="0" min="0" required>
+            Quantite : <input type="number" name="quantite" value="0" min="0" required>
+            <button type="button" onclick="this.parentElement.parentElement.remove()">Supprimer</button>
+        </p>
+    `;
+            formulaire.appendChild(div);
+        }
+
+    </script>
+
+
+
+</body>
+
+</html>

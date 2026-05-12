@@ -30,3 +30,6 @@ insert into statut(libelle) VALUES
 ('Fin Forage');
 
 
+insert into type_devis(libelle) VALUES
+('Etude'),
+('Forage');

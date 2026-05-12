@@ -54,7 +54,7 @@ public class DemandeController {
             @RequestParam("communeId") Integer communeId,
             @RequestParam("lieu") String lieu,
             @RequestParam("date") String dateStr) {
-
+            
         try {
             // Valider les paramètres
             if (clientId == null || clientId <= 0) {
@@ -80,11 +80,11 @@ public class DemandeController {
             if (commune == null) {
                 throw new IllegalArgumentException("Commune non trouvée avec id: " + communeId);
             }
-
+            
             // Parser la date
             DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
             LocalDateTime localDateTime = LocalDateTime.parse(dateStr, format);
-
+            
             // Créer et sauvegarder la demande
             Demande demande = new Demande();
             demande.setClient(client);
@@ -165,13 +165,13 @@ public class DemandeController {
         // Parser la date
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
         LocalDateTime localDateTime = LocalDateTime.parse(dateStr, format);
-        
+
         Demande demande = new Demande();
         demande.setId_demande(demandeId);
         demande.setClient(client);
         demande.setCommune(commune);
         demande.setLieu(lieu);
-        
+
         Statut statut = statutService.findById(statutId);
 
         DemandeStatut st = new DemandeStatut();
@@ -185,4 +185,10 @@ public class DemandeController {
 
         return "redirect:/listeDemande";
     }
+
+    @GetMapping("/demandeJSON/{id_demande}")
+    @ResponseBody
+    public Demande toJSON(@PathVariable("id_demande") Integer id_demande) {
+        return demandeService.findById(id_demande);
+    } 
 }

@@ -42,7 +42,7 @@ public class AccueilController {
 
         return "index";
     }
-    
+
     @GetMapping("/districts/{id_region}")
     @ResponseBody
     public List<District> getDistrictsByRegion(@PathVariable("id_region") Integer regionId) {

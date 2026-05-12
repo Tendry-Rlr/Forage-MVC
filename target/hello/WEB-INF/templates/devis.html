@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vos devis</title>
+</head>
+
+<body>
+    <h1>Devis</h1>
+    
+    <h1>Informations</h1>
+    <p th:text="${client.getNom_client()}">Nom du client : </p>
+    <p th:text="${demande.getLieu()}">Lieu : </p>
+    <p th:text="${demande.getCommune().getLibelle()}">Commune : </p>
+
+    <h1>Insertion de devis</h1>
+
+    <form th:action="@{/insert-devis}" method="post" id="formulaire">
+        <input type="hidden" name="id_client" th:value="${client.getId_client()}">
+        <input type="hidden" name="id_demande" th:value="${demande.getId_demande()}">
+
+        <p>Date <input type="datetime-local" name="date_creation"></p>
+        <input type="submit" value="Enregistrer ce devis">
+    </form>
+
+    <button onclick="newDevis()">Ajout de champ</button>
+
+    <h1 th:if="${message != null}" th:text="${message}"></h1>
+    <script>
+        function newDevis() {
+            const formulaire = document.getElementById("formulaire");
+            const div = document.createElement("div");
+
+            // Utilisation des backticks (`) pour le multi-ligne et l'index dynamique
+            div.innerHTML = `
+        <hr>
+        <p>
+            Nom : <input type="text" name="nom" required>
+            Prix Unitaire : <input type="number" name="pU" step="0.01" required>
+            Quantite : <input type="number" name="quantite" required>
+            <button type="button" onclick="this.parentElement.parentElement.remove()">Supprimer</button>
+        </p>
+    `;
+            formulaire.appendChild(div);
+        }    </script>
+</body>
+
+</html>
