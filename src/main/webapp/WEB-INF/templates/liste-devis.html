@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste devis</title>
+</head>
+
+<body>
+    <h1>Devis</h1>
+
+    <table border="1">
+        <tr>
+            <th>Id devis</th>
+            <th>Id demande</th>
+            <th>Date de creation</th>
+            <th>Id type</th>
+            <th>Action</th>
+        </tr>
+
+        <tr th:each="dev : ${devis}">
+            <td th:text="${dev.getId_devis()}"></td>
+            <td th:text="${dev.getDemande().getId_demande()}"></td>
+            <td th:text="${dev.getDate_creation()}"></td>
+            <td th:text="${dev.getTypeDevis().getLibelle()}"></td>
+            <td><a th:href="@{/update-devis/{id_devis}(id_devis=${dev.getId_devis()})}">Modifier</a></td>
+        </tr>
+    </table>
+</body>
+
+</html>

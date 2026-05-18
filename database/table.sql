@@ -39,7 +39,7 @@ create table demande (
 
 create table statut (
     id_statut int PRIMARY KEY AUTO_INCREMENT,
-    libelle VARCHAR(20)
+    libelle VARCHAR(50)
 );
 
 create table demande_statut (

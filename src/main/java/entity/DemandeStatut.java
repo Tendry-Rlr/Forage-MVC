@@ -20,8 +20,8 @@ public class DemandeStatut {
     private int id_demande_statut;
 
     @Column(name = "date", nullable = false)
-    private Timestamp date; 
-    
+    private Timestamp date;
+
     @ManyToOne
     @JoinColumn(name = "id_demande", nullable = false)
     private Demande demande;
@@ -30,6 +30,16 @@ public class DemandeStatut {
     @JoinColumn(name = "id_statut", nullable = false)
     private Statut statut;
 
+    public DemandeStatut(Timestamp date, Demande demande, Statut statut) {
+        this.date = date;
+        this.demande = demande;
+        this.statut = statut;
+    }
+
+    public DemandeStatut() {
+
+    }
+    
     public int getId_demande_statut() {
         return id_demande_statut;
     }

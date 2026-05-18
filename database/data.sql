@@ -24,10 +24,14 @@ INSERT INTO commune (libelle, id_district) VALUES
 
 insert into statut(libelle) VALUES
 ('Creee'),
-('Devis accepte'),
-('Devis decline'),
-('Debut Forage'),
-('Fin Forage');
+('Demande Etude Cree'),
+('Demande Etude Accepte'),
+('Demande Etude Refuse'),
+('Demande Forage Cree'),
+('Demande Forage Accepte'),
+('Demande Forage Refuse'),
+('Travail Cree'),
+('Travail Termine');
 
 
 insert into type_devis(libelle) VALUES

@@ -13,5 +13,6 @@ public interface DemandeRepository extends JpaRepository<Demande, Integer> {
 
     @Query("SELECT d FROM Demande d LEFT JOIN FETCH d.demandeStatuts ds LEFT JOIN FETCH ds.statut")
     List<Demande> findAllWithStatuts();
+
 }
 

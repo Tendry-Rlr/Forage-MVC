@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import entity.Client;
 import entity.Commune;
 import entity.Demande;
@@ -54,7 +58,7 @@ public class DemandeController {
             @RequestParam("communeId") Integer communeId,
             @RequestParam("lieu") String lieu,
             @RequestParam("date") String dateStr) {
-            
+
         try {
             // Valider les paramètres
             if (clientId == null || clientId <= 0) {
@@ -80,11 +84,11 @@ public class DemandeController {
             if (commune == null) {
                 throw new IllegalArgumentException("Commune non trouvée avec id: " + communeId);
             }
-            
+
             // Parser la date
             DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
             LocalDateTime localDateTime = LocalDateTime.parse(dateStr, format);
-            
+
             // Créer et sauvegarder la demande
             Demande demande = new Demande();
             demande.setClient(client);
@@ -188,7 +192,37 @@ public class DemandeController {
 
     @GetMapping("/demandeJSON/{id_demande}")
     @ResponseBody
-    public Demande toJSON(@PathVariable("id_demande") Integer id_demande) {
-        return demandeService.findById(id_demande);
-    } 
+    public String toJSON(@PathVariable("id_demande") Integer id_demande) {
+        Demande demande = demandeService.findById(id_demande);
+        DemandeStatut demandeStatut = demandeStatutService.finByDemandeStatutByStatut(id_demande, 7);
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode response = mapper.createObjectNode();
+
+        ObjectNode demandeNode = mapper.createObjectNode();
+        demandeNode.put("id_demande", demande.getId_demande());
+        demandeNode.put("lieu", demande.getLieu());
+
+        ObjectNode clientNode = mapper.createObjectNode();
+        if (demande.getClient() != null) {
+            clientNode.put("nom_client", demande.getClient().getNom_client());
+            clientNode.put("adresse", demande.getClient().getAdresse() == null ? "" : demande.getClient().getAdresse());
+        } else {
+            clientNode.put("nom_client", "");
+            clientNode.put("adresse", "");
+        }
+        demandeNode.set("client", clientNode);
+        response.set("demande", demandeNode);
+
+        // ajout de l'attribut `devis_rejete` (1 si existe, sinon 0)
+        response.put("devis_rejete", demandeStatut != null ? 1 : 0);
+
+        String json = null;
+
+        try {
+            json = mapper.writeValueAsString(response);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
 }

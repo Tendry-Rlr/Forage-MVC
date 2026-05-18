@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>devis</title>
+</head>
+
+<body>
+
+    <h1>Mise a jour de devis</h1>
+
+    <form th:action="@{/update-devis}" method="post" id="formulaire">
+        <p>Demande <input type="number" th:value="${devis.getDemande().getId_demande()}" name="id_demande"
+                id="id_demande"></p>
+
+        <div id="info">
+            <p th:each="materiel : ${devis.getDevis_materiels()}">
+                Nom : <input type="text" name="nom" th:value="${materiel.getLibelle()}" required>
+                Prix Unitaire : <input type="number" name="pU" th:value="${materiel.getPrix_unitaire()}" step="0.01"
+                    value="0" min="0" required>
+                Quantite : <input type="number" name="quantite" th:value="${materiel.getQuantite()}" value="0" min="0"
+                    required>
+                <button type="button" onclick="this.parentElement.parentElement.remove()">Supprimer</button>
+            </p>
+        </div>
+
+        <p>Type :
+            <select name="typeId" id="typeId">
+                <option value="">--Selectionnez un type --</option>
+                <option th:each="type : ${types}" th:value="${type.getId_type()}" th:text="${type.getLibelle()}"
+                    th:selected="${type.getId_type()} == ${devis.getTypeDevis().getId_type()}">
+                </option>
+            </select>
+        </p>
+
+        <p>Date <input type="datetime-local" th:value="${devis.getDate_creation()}" name="date_creation"></p>
+
+        <input type="hidden" name="id_devis" th:value="${devis.getId_devis()}">
+        <input type="submit" value="Enregistrer ce devis">
+    </form>
+
+    <button type="button" onclick="newDevis()">Ajout de champ</button>
+
+    <script th:inline="javascript">
+        const typeSelect = document.getElementById('typeId');
+        const originalTypeOptions = typeSelect ? typeSelect.innerHTML : '';
+
+        document.getElementById('id_demande').addEventListener('blur', function () {
+            const demandeId = this.value.trim();
+
+            if (!demandeId) return;
+
+            const url = /*[[@{/demandeJSON/{id}(id=${0})}]]*/ ''
+                .replace('0', demandeId);
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data || Object.keys(data).length === 0) {
+                        const p = document.createElement("p");
+                        p.textContent = "Aucune demande correpondante";
+                        const div = document.getElementById("info");
+                        div.innerHTML = "";
+                        div.appendChild(p);
+                        if (typeSelect) typeSelect.innerHTML = originalTypeOptions;
+                        return;
+                    }
+
+                    const div = document.getElementById("info");
+                    div.innerHTML = "";
+
+                    const nomClient = document.createElement("p");
+                    nomClient.textContent = "Nom : " + (data.demande && data.demande.client ? data.demande.client.nom_client : '');
+                    div.appendChild(nomClient);
+
+                    const lieu = document.createElement("p");
+                    lieu.textContent = "Lieu " + (data.demande ? data.demande.lieu : '');
+                    div.appendChild(lieu);
+
+                    const adresse = document.createElement("p");
+                    adresse.textContent = "Adresse : " + (data.demande && data.demande.client ? data.demande.client.adresse : '');
+                    div.appendChild(adresse);
+
+                    // Si le devis est rejeté (devis_rejete === 1) n'afficher que l'option 'Etude'
+                    if (typeSelect) {
+                        if (data.devis_rejete === 1) {
+                            for (let i = typeSelect.options.length - 1; i >= 0; i--) {
+                                const opt = typeSelect.options[i];
+                                if (!/etude/i.test(opt.text)) {
+                                    typeSelect.remove(i);
+                                }
+                            }
+                        } else {
+                            typeSelect.innerHTML = originalTypeOptions;
+                        }
+                    }
+                })
+                .catch(error => console.error(error));
+        });
+
+        function newDevis() {
+            const formulaire = document.getElementById("formulaire");
+            const div = document.createElement("div");
+
+            div.innerHTML = `
+        <hr>
+        <p>
+            Nom : <input type="text" name="nom" required>
+            Prix Unitaire : <input type="number" name="pU" step="0.01" value="0" min="0" required>
+            Quantite : <input type="number" name="quantite" value="0" min="0" required>
+            <button type="button" onclick="this.parentElement.parentElement.remove()">Supprimer</button>
+        </p>
+    `;
+            formulaire.appendChild(div);
+        }
+
+    </script>
+
+</body>
+
+</html>

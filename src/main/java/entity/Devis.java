@@ -1,6 +1,5 @@
 package entity;
 
-
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -30,14 +29,20 @@ public class Devis {
     private Timestamp date_creation;
 
     @OneToMany(mappedBy = "devis")
-    List<DevisMateriel> devis_materiesl;
+    List<DevisMateriel> devis_materiels;
 
-    public Devis(Demande demande, Timestamp date_creation) {
+    @ManyToOne
+    @JoinColumn(name = "id_type", nullable = false)
+    private TypeDevis typeDevis;
+
+    public Devis(Demande demande, Timestamp date_creation, TypeDevis type) {
         this.demande = demande;
         this.date_creation = date_creation;
+        this.typeDevis = type;
     }
 
-    public Devis() {}
+    public Devis() {
+    }
 
     public int getId_devis() {
         return id_devis;
@@ -59,18 +64,24 @@ public class Devis {
         return date_creation;
     }
 
+    public TypeDevis getTypeDevis() {
+        return typeDevis;
+    }
+
+    public void setTypeDevis(TypeDevis typeDevis) {
+        this.typeDevis = typeDevis;
+    }
+
     public void setDate_creation(Timestamp date_creation) {
         this.date_creation = date_creation;
     }
 
-    public List<DevisMateriel> getDevis_materiesl() {
-        return devis_materiesl;
+    public List<DevisMateriel> getDevis_materiels() {
+        return devis_materiels;
     }
 
-    public void setDevis_materiesl(List<DevisMateriel> devis_materiesl) {
-        this.devis_materiesl = devis_materiesl;
+    public void setDevis_materiels(List<DevisMateriel> devis_materiesl) {
+        this.devis_materiels = devis_materiesl;
     }
-
-
 
 }

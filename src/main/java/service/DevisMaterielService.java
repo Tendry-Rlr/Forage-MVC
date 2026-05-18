@@ -21,4 +21,8 @@ public class DevisMaterielService {
         this.devisMaterielRepository.save(devisMateriel);
     }
 
+    public void deleteById(Integer id_devis) {
+        this.devisMaterielRepository.deleteByIdDevis(id_devis);
+    }
+
 }

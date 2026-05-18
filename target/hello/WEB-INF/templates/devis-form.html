@@ -9,10 +9,7 @@
 
 <body>
 
-
     <h1>Insertion de devis</h1>
-
-
 
     <form th:action="@{/insert-devis}" method="post" id="formulaire">
         <p>Demande <input type="number" name="id_demande" id="id_demande"></p>
@@ -31,7 +28,10 @@
 
     <button type="button" onclick="newDevis()">Ajout de champ</button>
 
-    <script>
+    <script th:inline="javascript">
+        const typeSelect = document.getElementById('typeId');
+        const originalTypeOptions = typeSelect ? typeSelect.innerHTML : '';
+
         document.getElementById('id_demande').addEventListener('blur', function () {
             const demandeId = this.value.trim();
 
@@ -42,19 +42,46 @@
 
             fetch(url)
                 .then(response => response.json())
+                .then(data => {
+                    if (!data || Object.keys(data).length === 0) {
+                        const p = document.createElement("p");
+                        p.textContent = "Aucune demande correpondante";
+                        const div = document.getElementById("info");
+                        div.innerHTML = "";
+                        div.appendChild(p);
+                        if (typeSelect) typeSelect.innerHTML = originalTypeOptions;
+                        return;
+                    }
 
-                .then(demande => {
-                    console.log(demande)
                     const div = document.getElementById("info");
                     div.innerHTML = "";
 
                     const nomClient = document.createElement("p");
-                    nomClient.textContent = demande.client.nom_client;
+                    nomClient.textContent = "Nom : " + (data.demande && data.demande.client ? data.demande.client.nom_client : '');
                     div.appendChild(nomClient);
 
                     const lieu = document.createElement("p");
-                    lieu.textContent = demande.lieu;
+                    lieu.textContent = "Lieu " + (data.demande ? data.demande.lieu : '');
                     div.appendChild(lieu);
+
+                    const adresse = document.createElement("p");
+                    adresse.textContent = "Adresse : " + (data.demande && data.demande.client ? data.demande.client.adresse : '');
+                    div.appendChildz(adresse);
+
+                    // Si le devis est rejeté (devis_rejete === 1) n'afficher que l'option 'Etude'
+                    if (typeSelect) {
+                        if (data.devis_rejete === 1) {
+                            for (let i = typeSelect.options.length - 1; i >= 0; i--) {
+                                const opt = typeSelect.options[i];
+                                if (!/etude/i.test(opt.text)) {
+                                    typeSelect.remove(i);
+                                }
+                            }
+                        } else {
+                            typeSelect.innerHTML = originalTypeOptions;
+                        }
+                    }
+
                 })
                 .catch(error => console.error(error));
         });
@@ -63,7 +90,6 @@
             const formulaire = document.getElementById("formulaire");
             const div = document.createElement("div");
 
-            // Utilisation des backticks (`) pour le multi-ligne et l'index dynamique
             div.innerHTML = `
         <hr>
         <p>

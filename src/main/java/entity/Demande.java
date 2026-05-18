@@ -18,7 +18,8 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "demande")
 public class Demande {
-    public Demande() {}
+    public Demande() {
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,11 +36,11 @@ public class Demande {
     @ManyToOne
     @JoinColumn(name = "id_commune", nullable = false)
     private Commune commune;
-    
+
     @OneToMany(mappedBy = "demande")
     @JsonIgnore
     private List<DemandeStatut> demandeStatuts;
-    
+
     // Getters and setters
     public int getId_demande() {
         return id_demande;

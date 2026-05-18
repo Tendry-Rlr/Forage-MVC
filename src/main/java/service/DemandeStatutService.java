@@ -36,6 +36,10 @@ public class DemandeStatutService {
         return repository.findDemandeStatutByDemande(idd, ids);
     }
 
+    public DemandeStatut finByDemandeStatutByStatut(Integer idd, Integer idstatut) {
+        return repository.findDemandeStatutByStatut(idd, idstatut);
+    }
+
     public void deleteById(Integer id) {
         repository.deleteById(id);
     }

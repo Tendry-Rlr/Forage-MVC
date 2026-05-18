@@ -2,6 +2,7 @@ package entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,7 +18,7 @@ public class DevisMateriel {
     @Column(name = "id_devis_materiel")
     private int id_devis_materiel;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_devis", nullable = false)
     private Devis devis;
 
@@ -35,6 +36,9 @@ public class DevisMateriel {
         this.libelle = libelle;
         this.prix_unitaire = prix_unitaire;
         this.quantite = quantite;
+    }
+
+    public DevisMateriel() {
     }
 
     public int getId_devis_materiel() {

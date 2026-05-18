@@ -1,5 +1,7 @@
 package service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +19,19 @@ public class DevisService {
         this.devisRepository = devisRepository;
     }
 
-    public Devis save(Devis devis){
+    public Devis save(Devis devis) {
         return this.devisRepository.save(devis);
+    }
+
+    public List<Devis> findAll() {
+        return this.devisRepository.findAll();
+    }
+
+    public Devis findById(Integer id) {
+        return (Devis) this.devisRepository.findById(id).orElse(null);
+    }
+
+    public Devis update(Devis dev) {
+        return this.devisRepository.save(dev);
     }
 }
