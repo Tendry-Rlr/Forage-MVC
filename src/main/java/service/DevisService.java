@@ -31,7 +31,15 @@ public class DevisService {
         return (Devis) this.devisRepository.findById(id).orElse(null);
     }
 
+    public Devis findByIdDemande(Integer idDemande) {
+        return this.devisRepository.findByIdDemande(idDemande);
+    }
+
     public Devis update(Devis dev) {
         return this.devisRepository.save(dev);
+    }
+
+    public void delete(Devis devis) {
+        this.devisRepository.delete(devis);
     }
 }

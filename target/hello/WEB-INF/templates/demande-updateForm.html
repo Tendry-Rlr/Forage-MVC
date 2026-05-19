@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>devis</title>
+</head>
+
+<body>
+
+    <h1>Modifier le statut d'une demande</h1>
+
+    <form th:action="@{/update-demandeForm}" method="post" id="formulaire">
+        <p>Demande <input type="number" name="id_demande" id="id_demande"></p>
+        <div id="info"></div>
+        <p>Statut :
+            <select name="statutId" id="typeId">
+                <option value="">--Selectionnez un statut --</option>
+                <option th:each="statut : ${status}" th:value="${statut.getId_statut()}"
+                    th:text="${statut.getLibelle()}">
+                </option>
+            </select>
+        </p>
+
+        <p>Date <input type="datetime-local" name="date_creation"></p>
+        <p>Observation <textarea name="observation"></textarea></p>
+        <input type="submit" value="Enregistrer ce modification">
+    </form>
+
+    <script th:inline="javascript">
+        const typeSelect = document.getElementById('typeId');
+        const originalTypeOptions = typeSelect ? typeSelect.innerHTML : '';
+
+        document.getElementById('id_demande').addEventListener('blur', function () {
+            const demandeId = this.value.trim();
+
+            if (!demandeId) return;
+
+            const url = /*[[@{/demandeUpdateJSON/{id}(id=${0})}]]*/ ''
+                .replace('0', demandeId);
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const div = document.getElementById("info");
+                    div.innerHTML = "";
+
+                    if (!data || Object.keys(data).length === 0) {
+                        const p = document.createElement("p");
+                        p.textContent = "Aucune demande correspondante";
+                        div.appendChild(p);
+                        if (typeSelect) typeSelect.innerHTML = originalTypeOptions;
+                        return;
+                    }
+
+                    // Afficher les informations de la demande
+                    const nomClient = document.createElement("p");
+                    nomClient.textContent = "Nom : " + (data.nom_client || '');
+                    div.appendChild(nomClient);
+
+                    const lieu = document.createElement("p");
+                    lieu.textContent = "Lieu : " + (data.lieu || '');
+                    div.appendChild(lieu);
+
+                    const adresse = document.createElement("p");
+                    adresse.textContent = "Adresse : " + (data.adresse || '');
+                    div.appendChild(adresse);
+
+                    const date = document.createElement("p");
+                    date.textContent = "Date : " + (data.date || '');
+                    div.appendChild(date);
+
+                    const libelle = document.createElement("p");
+                    libelle.textContent = "Statut : " + (data.statut || '');
+                    div.appendChild(libelle);
+                })
+                .catch(error => console.error(error));
+        });
+    </script>
+
+
+
+</body>
+
+</html>

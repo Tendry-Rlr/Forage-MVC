@@ -16,8 +16,11 @@ public interface DemandeStatutRepository extends JpaRepository<DemandeStatut, In
 
     @Query("select ds from DemandeStatut ds where ds.demande.id_demande = :idd and ds.id_demande_statut = :ids")
     DemandeStatut findDemandeStatutByDemande(@Param("idd") Integer idd, @Param("ids") Integer ids);
-    
+
     @Query("select ds from DemandeStatut ds where ds.demande.id_demande = :idd and ds.statut.id_statut = :idstatut order by date desc")
     DemandeStatut findDemandeStatutByStatut(@Param("idd") Integer idd, @Param("idstatut") Integer idstatut);
+
+    @Query("select ds from DemandeStatut ds where ds.demande.id_demande = :id_demande order by ds.date desc limit 1")
+    DemandeStatut findDemandeStatutByCurrentDate(@Param("id_demande") Integer id_demande);
 
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.xml.StaxUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,11 +22,14 @@ import entity.Client;
 import entity.Commune;
 import entity.Demande;
 import entity.DemandeStatut;
+import entity.Devis;
 import entity.Statut;
 import service.ClientService;
 import service.CommuneService;
 import service.DemandeService;
 import service.DemandeStatutService;
+import service.DevisMaterielService;
+import service.DevisService;
 import service.DistrictService;
 import service.RegionService;
 import service.StatutService;
@@ -39,10 +43,13 @@ public class DemandeController {
     private final CommuneService communeService;
     private final RegionService regionService;
     private final DistrictService districtService;
+    private final DevisService devisService;
+    private final DevisMaterielService devisMaterielService;
 
     public DemandeController(DemandeService demandeService, DemandeStatutService demandeStatutService,
             StatutService statutService, ClientService clientService, CommuneService communeService,
-            RegionService regionService, DistrictService districtService) {
+            RegionService regionService, DistrictService districtService, DevisService devisService,
+            DevisMaterielService devisMaterielService) {
         this.demandeService = demandeService;
         this.demandeStatutService = demandeStatutService;
         this.statutService = statutService;
@@ -50,6 +57,8 @@ public class DemandeController {
         this.communeService = communeService;
         this.regionService = regionService;
         this.districtService = districtService;
+        this.devisService = devisService;
+        this.devisMaterielService = devisMaterielService;
     }
 
     @PostMapping("/insertDemande")
@@ -97,7 +106,7 @@ public class DemandeController {
             Demande saved = demandeService.save(demande);
 
             // Créer le statut initial
-            Statut statut = statutService.findByNom("Creee");
+            Statut statut = statutService.findById(1);
             if (statut == null) {
                 throw new IllegalArgumentException("Statut 'Creee' non trouvé en base de données");
             }
@@ -129,6 +138,10 @@ public class DemandeController {
         for (DemandeStatut ds : demandeStatus) {
             this.demandeStatutService.deleteById(ds.getId_demande_statut());
         }
+
+        Devis devis = devisService.findByIdDemande(id_demande);
+        devisMaterielService.deleteById(devis.getId_devis());
+        devisService.delete(devis);
 
         this.demandeService.deleteById(id_demande);
         return "redirect:/listeDemande";
@@ -194,7 +207,7 @@ public class DemandeController {
     @ResponseBody
     public String toJSON(@PathVariable("id_demande") Integer id_demande) {
         Demande demande = demandeService.findById(id_demande);
-        DemandeStatut demandeStatut = demandeStatutService.finByDemandeStatutByStatut(id_demande, 7);
+        DemandeStatut demandeStatut = demandeStatutService.findByDemandeStatutByStatut(id_demande, 7);
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode response = mapper.createObjectNode();
 
@@ -224,5 +237,69 @@ public class DemandeController {
             e.printStackTrace();
         }
         return json;
+    }
+
+    @GetMapping("/demandeStatutForm")
+    public String update_demande_form(Model model) {
+        List<Statut> liste = statutService.findAll();
+        model.addAttribute("status", liste);
+        return "demande-updateForm";
+    }
+
+    @GetMapping("/demandeUpdateJSON/{id_demande}")
+    @ResponseBody
+    public String toJSON_update(@PathVariable("id_demande") Integer id_demande) {
+        Demande demande = demandeService.findById(id_demande);
+        DemandeStatut demandeStatut = demandeStatutService.findByCurrentStatut(id_demande);
+
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode response = mapper.createObjectNode();
+
+        // Ajouter les informations de la demande
+        response.put("id_demande", demande.getId_demande());
+        response.put("lieu", demande.getLieu());
+
+        // Ajouter les informations du statut
+        if (demandeStatut != null) {
+            response.put("date", demandeStatut.getDate().toString());
+            response.put("statut", demandeStatut.getStatut().getLibelle());
+        } else {
+            response.put("date", "");
+            response.put("statut", "");
+        }
+
+        // Ajouter les informations du client
+        if (demande.getClient() != null) {
+            response.put("nom_client", demande.getClient().getNom_client());
+            response.put("adresse", demande.getClient().getAdresse() == null ? "" : demande.getClient().getAdresse());
+        } else {
+            response.put("nom_client", "");
+            response.put("adresse", "");
+        }
+
+        try {
+            return mapper.writeValueAsString(response);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return "{}";
+        }
+    }
+
+    @PostMapping("/update-demandeForm")
+    public String update_demande(@RequestParam("id_demande") Integer id_demande,
+            @RequestParam("statutId") Integer id_statut, @RequestParam("observation") String observation,
+            @RequestParam("date_creation") String dateStr) {
+
+        // parser la date
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        LocalDateTime localDateTime = LocalDateTime.parse(dateStr, format);
+
+        Statut statut = statutService.findById(id_statut);
+        Demande demande = demandeService.findById(id_demande);
+
+        DemandeStatut ds = new DemandeStatut(Timestamp.valueOf(localDateTime), demande, statut, observation);
+        demandeStatutService.save(ds);
+        
+        return "redirect:/listeDemande";
     }
 }

@@ -24,6 +24,17 @@ public class Statut {
     @OneToMany(mappedBy = "statut")
     List<DemandeStatut> demandeStatuts;
 
+    @Column(name = "signe", length = 10)
+    private String signe;
+
+    public String getSigne() {
+        return signe;
+    }
+
+    public void setSigne(String signe) {
+        this.signe = signe;
+    }
+
     public int getId_statut() {
         return id_statut;
     }

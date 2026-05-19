@@ -30,16 +30,37 @@ public class DemandeStatut {
     @JoinColumn(name = "id_statut", nullable = false)
     private Statut statut;
 
+    @Column(name = "observation", length = 100)
+    private String observation;
+
+    @Column(name = "duree_travaille")
+    private double duree_travaille;
+
     public DemandeStatut(Timestamp date, Demande demande, Statut statut) {
         this.date = date;
         this.demande = demande;
         this.statut = statut;
     }
 
+    public DemandeStatut(Timestamp date, Demande demande, Statut statut, String obs) {
+        this.date = date;
+        this.demande = demande;
+        this.observation = obs;
+        this.statut = statut;
+    }
+
     public DemandeStatut() {
 
     }
-    
+
+    public double getDuree_travaille() {
+        return duree_travaille;
+    }
+
+    public void setDuree_travaille(double duree_travaille) {
+        this.duree_travaille = duree_travaille;
+    }
+
     public int getId_demande_statut() {
         return id_demande_statut;
     }
@@ -50,6 +71,14 @@ public class DemandeStatut {
 
     public Timestamp getDate() {
         return date;
+    }
+
+    public String getObservation() {
+        return observation;
+    }
+
+    public void setObservation(String observation) {
+        this.observation = observation;
     }
 
     public void setDate(Timestamp date) {

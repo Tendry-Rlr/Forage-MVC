@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liste demande</title>
+    <link rel="stylesheet" th:href="@{/ressources/style.css}">
 </head>
 
 <body>
@@ -29,10 +30,14 @@
                 <td th:text="${demande.getClient().getNom_client()}"></td>
                 <td th:text="${demande.getLieu()}"></td>
                 <td th:text="${demandeStatuts.getDate()}"></td>
-                <td th:text="${demandeStatuts.getStatut().getLibelle()}"></td>
+                <td th:text="${demandeStatuts.getStatut().getSigne()}"></td>
                 <td><a th:href="@{/supprimer/{id}(id=${demande.getId_demande()})}">Supprimer</a></td>
-                <td><a th:href="@{/update/{id_demande}/{id_demande_statut}(id_demande=${demande.getId_demande()},id_demande_statut=${demandeStatuts.getId_demande_statut()})}">Modifier</a></td>
-                <td th:if="${demandeStatuts.getStatut().getId_statut() == 2}"><a th:href="@{/voir-devis/{id_client}/{id_demande}(id_client=${demande.getClient().getId_client()}, id_demande=${demande.getId_demande()})}">Voir devis</a></td>
+                <td><a
+                        th:href="@{/update/{id_demande}/{id_demande_statut}(id_demande=${demande.getId_demande()},id_demande_statut=${demandeStatuts.getId_demande_statut()})}">Modifier</a>
+                </td>
+                <td th:if="${demandeStatuts.getStatut().getId_statut() == 2}"><a
+                        th:href="@{/voir-devis/{id_client}/{id_demande}(id_client=${demande.getClient().getId_client()}, id_demande=${demande.getId_demande()})}">Voir
+                        devis</a></td>
                 <td th:if="${demandeStatuts.getStatut().getId_statut() != 2}">Pas valide</a></td>
             </tr>
         </th:block>

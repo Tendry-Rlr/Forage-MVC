@@ -73,3 +73,11 @@ create table type_devis (
     id_type_devis int PRIMARY KEY AUTO_INCREMENT,
     libelle VARCHAR(20)
 );
+
+create table parametre(
+    id
+    id_statut_1
+    id_statut_2
+    duree_travaille (min)
+    alerte
+);
