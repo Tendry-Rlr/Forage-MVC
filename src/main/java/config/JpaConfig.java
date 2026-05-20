@@ -23,7 +23,7 @@ public class JpaConfig {
     public DataSource dataSource() {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/forage?useSSL=false&serverTimezone=UTC");
+        dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/forage?useSSL=false&serverTimezone=Indian/Antananarivo");
         dataSource.setUsername("root");
         dataSource.setPassword("");
         
@@ -52,6 +52,7 @@ public class JpaConfig {
         jpaProperties.setProperty("hibernate.hbm2ddl.auto", "update");
         jpaProperties.setProperty("hibernate.format_sql", "true");
         jpaProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
+        jpaProperties.setProperty("hibernate.jdbc.time_zone", "Indian/Antananarivo");
         em.setJpaProperties(jpaProperties);
 
         return em;

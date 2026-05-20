@@ -20,8 +20,8 @@ public class Temps {
         // 12 Décembre 2026 à 14h30
         LocalDateTime dateSpecifique = LocalDateTime.of(2026, 12, 12, 14, 30);
 
-        LocalDateTime ancien = LocalDateTime.of(2026, 05, 12, 6, 00),
-                nouveau = LocalDateTime.of(2026, 05, 14, 20, 00);
+        LocalDateTime ancien = LocalDateTime.of(2026, 05, 20, 7, 00),
+                nouveau = LocalDateTime.of(2026, 05, 22, 22, 00);
 
         double heure = 0, diff = 0;
         ancien = Temps.formate(intervalle_debut, intervalle_fin, ancien);

@@ -1,6 +1,5 @@
 package controller;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -102,7 +101,7 @@ public class DevisController {
         TypeDevis type = typeDevisService.findById(id_type);
 
         // ajout dans devis
-        Devis devis = new Devis(demande, Timestamp.valueOf(localDateTime), type);
+        Devis devis = new Devis(demande, localDateTime, type);
         Devis saved = devisService.save(devis);
 
         // ajoute dans devisMateriel
@@ -120,7 +119,7 @@ public class DevisController {
 
         // ajout dans demande statut
         Statut statut = statutService.findById(statut_id);
-        DemandeStatut demandeStatut = new DemandeStatut(Timestamp.valueOf(localDateTime), demande, statut);
+        DemandeStatut demandeStatut = new DemandeStatut(localDateTime, demande, statut);
         demandeStatutService.save(demandeStatut);
 
         message = "Devis inseree";
@@ -167,7 +166,7 @@ public class DevisController {
         TypeDevis type = typeDevisService.findById(id_type);
 
         // update du devis
-        Devis devis = new Devis(demande, Timestamp.valueOf(localDateTime), type);
+        Devis devis = new Devis(demande, localDateTime, type);
         devis.setId_devis(id_devis);
 
         Devis saved = devisService.update(devis);
@@ -190,7 +189,7 @@ public class DevisController {
 
         // ajout dans demande statut
         Statut statut = statutService.findById(statut_id);
-        DemandeStatut demandeStatut = new DemandeStatut(Timestamp.valueOf(localDateTime), demande, statut);
+        DemandeStatut demandeStatut = new DemandeStatut(localDateTime, demande, statut);
         demandeStatutService.save(demandeStatut);
 
         message = "Devis mise a jour";

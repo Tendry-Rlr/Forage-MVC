@@ -60,7 +60,8 @@
         </p>
 
         <p>Lieu <input type="text" name="lieu" th:value="${demande.getLieu()}"></p>
-        <p>Date <input type="datetime-local" name="date" th:value="${demande_statut.getDate()}"></p>
+        <p>Date <input type="datetime-local" name="date"
+            th:value="${demande_statut.getDate() != null ? #temporals.format(demande_statut.getDate(), 'yyyy-MM-dd''T''HH:mm') : ''}"></p>
 
         <input type="hidden" name="id_demande" th:value="${demande.getId_demande()}">
         <input type="hidden" name="id_demande_statut" th:value="${demande_statut.getId_demande_statut()}">

@@ -1,13 +1,11 @@
 package controller;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.xml.StaxUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -113,7 +111,7 @@ public class DemandeController {
 
             // Sauvegarder l'état de la demande
             DemandeStatut st = new DemandeStatut();
-            st.setDate(Timestamp.valueOf(localDateTime));
+            st.setDate(localDateTime);
             st.setDemande(saved);
             st.setStatut(statut);
             demandeStatutService.save(st);
@@ -193,7 +191,7 @@ public class DemandeController {
 
         DemandeStatut st = new DemandeStatut();
         st.setId_demande_statut(demandeStatutId);
-        st.setDate(Timestamp.valueOf(localDateTime));
+        st.setDate(localDateTime);
         st.setDemande(demande);
         st.setStatut(statut);
 
@@ -297,7 +295,7 @@ public class DemandeController {
         Statut statut = statutService.findById(id_statut);
         Demande demande = demandeService.findById(id_demande);
 
-        DemandeStatut ds = new DemandeStatut(Timestamp.valueOf(localDateTime), demande, statut, observation);
+        DemandeStatut ds = new DemandeStatut(localDateTime, demande, statut, observation);
         demandeStatutService.save(ds);
         
         return "redirect:/listeDemande";

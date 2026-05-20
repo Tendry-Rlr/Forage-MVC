@@ -1,6 +1,5 @@
 package service;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -57,6 +56,9 @@ public class DemandeStatutService {
     }
 
     public void update(DemandeStatut d) {
+        if (d.getObservation() == null) {
+            d.setObservation("Pas d'observation");
+        }
         repository.save(d);
     }
 
@@ -70,11 +72,8 @@ public class DemandeStatutService {
         LocalTime intervalle_debut = LocalTime.of(8, 0);
         LocalTime intervalle_fin = LocalTime.of(16, 0);
 
-        Timestamp oldDate = ds.getDate();
-        Timestamp newDate = demandeStatut.getDate();
-
-        LocalDateTime ancien = oldDate.toLocalDateTime();
-        LocalDateTime nouveau = newDate.toLocalDateTime();
+        LocalDateTime ancien = ds.getDate();
+        LocalDateTime nouveau = demandeStatut.getDate();
 
         ancien = this.formate(intervalle_debut, intervalle_fin, ancien);
         nouveau = this.formate(intervalle_debut, intervalle_fin, nouveau);

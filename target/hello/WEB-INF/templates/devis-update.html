@@ -35,7 +35,8 @@
             </select>
         </p>
 
-        <p>Date <input type="datetime-local" th:value="${devis.getDate_creation()}" name="date_creation"></p>
+        <p>Date <input type="datetime-local" name="date_creation"
+            th:value="${devis.getDate_creation() != null ? #temporals.format(devis.getDate_creation(), 'yyyy-MM-dd''T''HH:mm') : ''}"></p>
 
         <input type="hidden" name="id_devis" th:value="${devis.getId_devis()}">
         <input type="submit" value="Enregistrer ce devis">

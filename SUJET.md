@@ -30,6 +30,6 @@ Integration DT : 8h a 16h --> decalage HGMT
 creer une fonction dans DemandeStatutService et le mettre dans save pour calculer DT automatiquement a chaque insertion
 datediff : retourne nb_jours
 dateDeb et dateFin : recuperer la duree si inclut dans 8 et 16 sinon 0
-DT : dureeDeb + dateDiff(16-8) + dureeFin
+DT : dureeDeb + dateDiff(16-8) + dureeFin (ok)
 
 API (php) : recuperer les alertes pour une demande

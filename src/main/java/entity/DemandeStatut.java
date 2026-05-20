@@ -1,6 +1,6 @@
 package entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,7 +20,7 @@ public class DemandeStatut {
     private int id_demande_statut;
 
     @Column(name = "date", nullable = false)
-    private Timestamp date;
+    private LocalDateTime date;
 
     @ManyToOne
     @JoinColumn(name = "id_demande", nullable = false)
@@ -36,13 +36,13 @@ public class DemandeStatut {
     @Column(name = "duree_travaille")
     private double duree_travaille;
 
-    public DemandeStatut(Timestamp date, Demande demande, Statut statut) {
+    public DemandeStatut(LocalDateTime date, Demande demande, Statut statut) {
         this.date = date;
         this.demande = demande;
         this.statut = statut;
     }
 
-    public DemandeStatut(Timestamp date, Demande demande, Statut statut, String obs) {
+    public DemandeStatut(LocalDateTime date, Demande demande, Statut statut, String obs) {
         this.date = date;
         this.demande = demande;
         this.observation = obs;
@@ -69,7 +69,7 @@ public class DemandeStatut {
         this.id_demande_statut = id_demande_statut;
     }
 
-    public Timestamp getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
@@ -81,7 +81,7 @@ public class DemandeStatut {
         this.observation = observation;
     }
 
-    public void setDate(Timestamp date) {
+    public void setDate(LocalDateTime date) {
         this.date = date;
     }
 

@@ -1,6 +1,6 @@
 package entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -26,7 +26,7 @@ public class Devis {
     private Demande demande;
 
     @Column(name = "date_creation", nullable = false)
-    private Timestamp date_creation;
+    private LocalDateTime date_creation;
 
     @OneToMany(mappedBy = "devis")
     List<DevisMateriel> devis_materiels;
@@ -35,7 +35,7 @@ public class Devis {
     @JoinColumn(name = "id_type", nullable = false)
     private TypeDevis typeDevis;
 
-    public Devis(Demande demande, Timestamp date_creation, TypeDevis type) {
+    public Devis(Demande demande, LocalDateTime date_creation, TypeDevis type) {
         this.demande = demande;
         this.date_creation = date_creation;
         this.typeDevis = type;
@@ -60,7 +60,7 @@ public class Devis {
         this.demande = demande;
     }
 
-    public Timestamp getDate_creation() {
+    public LocalDateTime getDate_creation() {
         return date_creation;
     }
 
@@ -72,7 +72,7 @@ public class Devis {
         this.typeDevis = typeDevis;
     }
 
-    public void setDate_creation(Timestamp date_creation) {
+    public void setDate_creation(LocalDateTime date_creation) {
         this.date_creation = date_creation;
     }
 
