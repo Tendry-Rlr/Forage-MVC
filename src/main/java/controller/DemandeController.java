@@ -138,8 +138,10 @@ public class DemandeController {
         }
 
         Devis devis = devisService.findByIdDemande(id_demande);
-        devisMaterielService.deleteById(devis.getId_devis());
-        devisService.delete(devis);
+        if (devis != null) {
+            devisMaterielService.deleteById(devis.getId_devis());
+            devisService.delete(devis);
+        }
 
         this.demandeService.deleteById(id_demande);
         return "redirect:/listeDemande";
@@ -297,7 +299,7 @@ public class DemandeController {
 
         DemandeStatut ds = new DemandeStatut(localDateTime, demande, statut, observation);
         demandeStatutService.save(ds);
-        
+
         return "redirect:/listeDemande";
     }
 }

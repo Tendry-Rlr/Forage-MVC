@@ -1,15 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/ressources/css/style.css}">
     <title>devis</title>
 </head>
 
 <body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-    <h1>Insertion de devis</h1>
+    <div class="container">
+        <div class="form-card">
+            <div class="card-header">
+                <h4>Insertion de devis</h4>
+            </div>
+            <div class="card-body">
 
     <form th:action="@{/insert-devis}" method="post" id="formulaire">
         <p>Demande <input type="number" name="id_demande" id="id_demande"></p>
@@ -23,7 +30,7 @@
         </p>
 
         <p>Date <input type="datetime-local" name="date_creation"></p>
-        <input type="submit" value="Enregistrer ce devis">
+        <input class="btn-submit" type="submit" value="Enregistrer ce devis">
     </form>
 
     <button type="button" onclick="newDevis()">Ajout de champ</button>
@@ -66,7 +73,7 @@
 
                     const adresse = document.createElement("p");
                     adresse.textContent = "Adresse : " + (data.demande && data.demande.client ? data.demande.client.adresse : '');
-                    div.appendChildz(adresse);
+                    div.appendChild(adresse);
 
                     // Si le devis est rejeté (devis_rejete === 1) n'afficher que l'option 'Etude'
                     if (typeSelect) {
@@ -91,18 +98,26 @@
             const div = document.createElement("div");
 
             div.innerHTML = `
-        <hr>
-        <p>
-            Nom : <input type="text" name="nom" required>
-            Prix Unitaire : <input type="number" name="pU" step="0.01" value="0" min="0" required>
-            Quantite : <input type="number" name="quantite" value="0" min="0" required>
-            <button type="button" onclick="this.parentElement.parentElement.remove()">Supprimer</button>
-        </p>
+        <div class="materiel-row">
+            <label>Nom
+                <input type="text" name="nom" required>
+            </label>
+            <label>Prix unitaire
+                <input type="number" name="pU" step="0.01" value="0" min="0" required>
+            </label>
+            <label>Quantite
+                <input type="number" name="quantite" value="0" min="0" required>
+            </label>
+            <button type="button" class="btn-remove-row" onclick="this.closest('.materiel-row').remove()">Supprimer</button>
+        </div>
     `;
             formulaire.appendChild(div);
         }
 
     </script>
+            </div>
+        </div>
+    </div>
 
 
 

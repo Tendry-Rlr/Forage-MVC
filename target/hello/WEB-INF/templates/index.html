@@ -1,64 +1,180 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script th:src="@{/ressources/script.js}" defer></script>
+    <title>Insertion de demande - Gestion Demandes</title>
 
-    <title>Title</title>
+    <!-- Lien vers le fichier CSS -->
+    <link rel="stylesheet" th:href="@{/ressources/css/style.css}">
+
+    <!-- Script JavaScript -->
+    <script th:src="@{/ressources/js/script.js}" defer></script>
 </head>
 
 <body>
-    <h4>Insertion de demande</h4>
+    <!-- Inclusion de la navbar -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-    <form th:action="@{/insertDemande}" th:object="${demande}" method="post">
-        <p>Client
-            <select name="clientId">
-                <option value="">-- Sélectionnez un client --</option>
-                <option th:each=" client : ${clients}" th:value="${client.getId_client()}"
-                    th:text="${client.getNom_client()}">
-                </option>
-            </select>
-        </p>
+    <!-- Contenu principal -->
+    <div class="container">
+        <div class="form-card">
+            <div class="card-header">
+                <h4>📝 Insertion d'une nouvelle demande</h4>
+            </div>
 
-        <p>Region
-            <select name="region" id="regionSelect">
-                <option th:each=" region : ${regions}" th:value="${region.getId_region()}"
-                    th:text="${region.getLibelle()}">
-                </option>
-            </select>
-        </p>
+            <div class="card-body">
+                <form th:action="@{/insertDemande}" th:object="${demande}" method="post">
+                    <div class="form-group">
+                        <label>Client</label>
+                        <select name="clientId" required>
+                            <option value="">-- Sélectionnez un client --</option>
+                            <option th:each="client : ${clients}" th:value="${client.getId_client()}"
+                                th:text="${client.getNom_client()}">
+                            </option>
+                        </select>
+                    </div>
 
-        <p>District
-            <select id="districtSelect">
-                <option value="">-- Sélectionnez un district --</option>
-                <option th:each=" district : ${districts}" th:value="${district.getId_district()}"
-                    th:text="${district.getLibelle()}">
-                </option>
-            </select>
-        </p>
+                    <div class="form-group">
+                        <label>Région</label>
+                        <select name="region" id="regionSelect" required>
+                            <option value="">-- Sélectionnez une région --</option>
+                            <option th:each="region : ${regions}" th:value="${region.getId_region()}"
+                                th:text="${region.getLibelle()}">
+                            </option>
+                        </select>
+                    </div>
 
-        <p>Commune
-            <select name="communeId" id="communeSelect">
-                <option value="">-- Sélectionnez une commune --</option>
-                <option th:each=" commune : ${communes}" th:value="${commune.getId_commune()}"
-                    th:text="${commune.getLibelle()}">
-                </option>
-            </select>
-        </p>
+                    <div class="form-group">
+                        <label>District</label>
+                        <select id="districtSelect" name="district" required>
+                            <option value="">-- Sélectionnez d'abord une région --</option>
+                        </select>
+                    </div>
 
-        <p>Lieu <input type="text" name="lieu" th:field="*{lieu}" required></p>
-        <p>Date <input type="datetime-local" name="date"></p>
+                    <div class="form-group">
+                        <label>Commune</label>
+                        <select name="communeId" id="communeSelect" required>
+                            <option value="">-- Sélectionnez d'abord un district --</option>
+                        </select>
+                    </div>
 
-        <input type="submit" value="Enregister ma demande">
-    </form>
+                    <div class="form-group">
+                        <label>Lieu</label>
+                        <input type="text" name="lieu" th:field="*{lieu}" required
+                            placeholder="Ex: Avenue de l'indépendance">
+                    </div>
 
-    <a th:href="@{/listeDemande}">Voir liste demande</a><br>
-    <a th:href="@{/to-devis}">Inserer un devis</a><br>
-    <a th:href="@{/listeDevis}">Liste devis</a><br>
-    <a th:href="@{/demandeStatutForm}">Modifier statut d'une demande</a><br>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="datetime-local" name="date" required>
+                    </div>
 
+                    <button type="submit" class="btn-submit">
+                        💾 Enregistrer ma demande
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script pour la gestion des cascades -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const regionSelect = document.getElementById('regionSelect');
+            const districtSelect = document.getElementById('districtSelect');
+            const communeSelect = document.getElementById('communeSelect');
+
+            // Chargement des districts
+            async function loadDistricts(regionId) {
+                if (!regionId) {
+                    districtSelect.innerHTML = '<option value="">-- Sélectionnez une région --</option>';
+                    communeSelect.innerHTML = '<option value="">-- Sélectionnez d\'abord un district --</option>';
+                    return;
+                }
+
+                districtSelect.innerHTML = '<option value="">-- Chargement... --</option>';
+                districtSelect.disabled = true;
+
+                try {
+                    const response = await fetch(`/districts/${regionId}`);
+
+                    if (!response.ok) {
+                        throw new Error(`Erreur HTTP: ${response.status}`);
+                    }
+
+                    const districts = await response.json();
+
+                    districtSelect.innerHTML = '<option value="">-- Sélectionnez un district --</option>';
+
+                    districts.forEach(district => {
+                        const option = document.createElement('option');
+                        option.value = district.id_district;
+                        option.textContent = district.libelle;
+                        districtSelect.appendChild(option);
+                    });
+
+                    districtSelect.disabled = false;
+
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    districtSelect.innerHTML = '<option value="">-- Erreur de chargement --</option>';
+                    districtSelect.disabled = false;
+                }
+            }
+
+            // Chargement des communes
+            async function loadCommunes(districtId) {
+                if (!districtId) {
+                    communeSelect.innerHTML = '<option value="">-- Sélectionnez d\'abord un district --</option>';
+                    return;
+                }
+
+                communeSelect.innerHTML = '<option value="">-- Chargement... --</option>';
+                communeSelect.disabled = true;
+
+                try {
+                    const response = await fetch(`/communes/${districtId}`);
+
+                    if (!response.ok) {
+                        throw new Error(`Erreur HTTP: ${response.status}`);
+                    }
+
+                    const communes = await response.json();
+
+                    communeSelect.innerHTML = '<option value="">-- Sélectionnez une commune --</option>';
+
+                    communes.forEach(commune => {
+                        const option = document.createElement('option');
+                        option.value = commune.id_commune;
+                        option.textContent = commune.libelle;
+                        communeSelect.appendChild(option);
+                    });
+
+                    communeSelect.disabled = false;
+
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    communeSelect.innerHTML = '<option value="">-- Erreur de chargement --</option>';
+                    communeSelect.disabled = false;
+                }
+            }
+
+            // Écouteurs d'événements
+            if (regionSelect) {
+                regionSelect.addEventListener('change', function () {
+                    loadDistricts(this.value);
+                });
+            }
+
+            if (districtSelect) {
+                districtSelect.addEventListener('change', function () {
+                    loadCommunes(this.value);
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

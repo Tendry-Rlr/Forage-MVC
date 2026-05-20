@@ -1,15 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script th:src="@{/ressources/script.js}" defer></script>
+    <link rel="stylesheet" th:href="@{/ressources/css/style.css}">
+    <script th:src="@{/ressources/js/script.js}" defer></script>
     <title>Modification demande</title>
 </head>
 
 <body>
-    <h1>Modifier cette demande</h1>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container">
+        <div class="form-card">
+            <div class="card-header">
+                <h4>Modifier cette demande</h4>
+            </div>
+            <div class="card-body">
 
     <form th:action="@{/update}" method="post">
         <p>Client
@@ -66,8 +74,11 @@
         <input type="hidden" name="id_demande" th:value="${demande.getId_demande()}">
         <input type="hidden" name="id_demande_statut" th:value="${demande_statut.getId_demande_statut()}">
 
-        <input type="submit" value="Enregister ma demande">
+        <input class="btn-submit" type="submit" value="Enregister ma demande">
     </form>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

@@ -1,15 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/ressources/css/style.css}">
     <title>devis</title>
 </head>
 
 <body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-    <h1>Modifier le statut d'une demande</h1>
+    <div class="container">
+        <div class="form-card">
+            <div class="card-header">
+                <h4>Modifier le statut d'une demande</h4>
+            </div>
+            <div class="card-body">
 
     <form th:action="@{/update-demandeForm}" method="post" id="formulaire">
         <p>Demande <input type="number" name="id_demande" id="id_demande"></p>
@@ -25,7 +32,7 @@
 
         <p>Date <input type="datetime-local" name="date_creation"></p>
         <p>Observation <textarea name="observation"></textarea></p>
-        <input type="submit" value="Enregistrer ce modification">
+        <input class="btn-submit" type="submit" value="Enregistrer ce modification">
     </form>
 
     <script th:inline="javascript">
@@ -78,6 +85,9 @@
                 .catch(error => console.error(error));
         });
     </script>
+            </div>
+        </div>
+    </div>
 
 
 

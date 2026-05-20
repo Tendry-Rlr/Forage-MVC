@@ -1,14 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liste devis</title>
+    <link rel="stylesheet" th:href="@{/ressources/css/style.css}">
 </head>
 
 <body>
-    <h1>Devis</h1>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container">
+        <div class="form-card">
+            <div class="card-header">
+                <h4>Liste des devis</h4>
+            </div>
+            <div class="card-body">
 
     <table border="1">
         <tr>
@@ -27,6 +35,9 @@
             <td><a th:href="@{/update-devis/{id_devis}(id_devis=${dev.getId_devis()})}">Modifier</a></td>
         </tr>
     </table>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

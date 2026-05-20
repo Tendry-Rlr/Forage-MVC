@@ -1,15 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liste demande</title>
-    <link rel="stylesheet" th:href="@{/ressources/style.css}">
+    <link rel="stylesheet" th:href="@{/ressources/css/style.css}">
 </head>
 
 <body>
-    <h1>Liste des demandes</h1>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container">
+        <div class="form-card">
+            <div class="card-header">
+                <h4>Liste des demandes</h4>
+            </div>
+            <div class="card-body">
 
     <table border="1">
 
@@ -42,6 +49,9 @@
             </tr>
         </th:block>
     </table>
+            </div>
+        </div>
+    </div>
 
 </body>
 

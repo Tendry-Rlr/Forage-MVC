@@ -1,14 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/ressources/css/style.css}">
     <title>Vos devis</title>
 </head>
 
 <body>
-    <h1>Devis</h1>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container">
+        <div class="form-card">
+            <div class="card-header">
+                <h4>Devis</h4>
+            </div>
+            <div class="card-body">
     
     <h1>Informations</h1>
     <p th:text="${client.getNom_client()}">Nom du client : </p>
@@ -22,7 +30,7 @@
         <input type="hidden" name="id_demande" th:value="${demande.getId_demande()}">
 
         <p>Date <input type="datetime-local" name="date_creation"></p>
-        <input type="submit" value="Enregistrer ce devis">
+        <input class="btn-submit" type="submit" value="Enregistrer ce devis">
     </form>
 
     <button onclick="newDevis()">Ajout de champ</button>
@@ -44,7 +52,11 @@
         </p>
     `;
             formulaire.appendChild(div);
-        }    </script>
+        }
+    </script>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
