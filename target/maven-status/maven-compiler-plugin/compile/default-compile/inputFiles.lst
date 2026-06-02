@@ -24,11 +24,15 @@
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/entity/Commune.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/service/DevisService.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/entity/Client.java
+/home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/service/ParametreService.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/entity/Devis.java
+/home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/model/DemandeAlerte.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/repository/CommuneRepository.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/config/JpaConfig.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/service/DemandeService.java
+/home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/repository/ParametreRepository.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/repository/TypeDevisRepository.java
+/home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/entity/Parametre.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/service/DistrictService.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/repository/RegionRepository.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/entity/TypeDevis.java

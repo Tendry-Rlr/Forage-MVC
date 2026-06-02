@@ -1,12 +1,16 @@
 connexion/ConnectionDB.class
+repository/ParametreRepository.class
+model/DemandeAlerte.class
 entity/Commune.class
 repository/CommuneRepository.class
 repository/DemandeStatutRepository.class
+service/ParametreService.class
 entity/DemandeStatut.class
 config/WebConfig.class
 service/RegionService.class
 repository/DevisMaterielRepository.class
 service/DistrictService.class
+entity/Parametre.class
 service/DemandeService.class
 repository/DevisRepository.class
 controller/AccueilController.class

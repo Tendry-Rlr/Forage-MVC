@@ -34,7 +34,7 @@ public class Client {
     @OneToMany(mappedBy = "client")
     @JsonIgnore
     List<Demande> demandes;
-    
+
     public int getId_client() {
         return id_client;
     }

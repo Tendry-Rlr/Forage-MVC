@@ -33,7 +33,12 @@ insert into statut(libelle) VALUES
 ('Travail Cree'),
 ('Travail Termine');
 
-
 insert into type_devis(libelle) VALUES
 ('Etude'),
 ('Forage');
+
+insert into parametre(id_statut1, id_statut2, duree_travaille, alerte) values
+(1, 2, 120, 'Jaune'),
+(1, 2, 200, 'Rouge'),
+(3, 5, 250, 'Tres rouge');
+

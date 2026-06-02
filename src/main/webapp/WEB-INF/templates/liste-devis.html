@@ -18,23 +18,28 @@
             </div>
             <div class="card-body">
 
-    <table border="1">
-        <tr>
-            <th>Id devis</th>
-            <th>Id demande</th>
-            <th>Date de creation</th>
-            <th>Id type</th>
-            <th>Action</th>
-        </tr>
+                <table border="1">
+                    <tr>
+                        <th>Id devis</th>
+                        <th>Id demande</th>
+                        <th>Date de creation</th>
+                        <th>Type</th>
+                        <th>Action</th>
+                        <th>Decision</th>
+                    </tr>
 
-        <tr th:each="dev : ${devis}">
-            <td th:text="${dev.getId_devis()}"></td>
-            <td th:text="${dev.getDemande().getId_demande()}"></td>
-            <td th:text="${dev.getDate_creation()}"></td>
-            <td th:text="${dev.getTypeDevis().getLibelle()}"></td>
-            <td><a th:href="@{/update-devis/{id_devis}(id_devis=${dev.getId_devis()})}">Modifier</a></td>
-        </tr>
-    </table>
+                    <tr th:each="dev : ${devis}">
+                        <td th:text="${dev.getId_devis()}"></td>
+                        <td th:text="${dev.getDemande().getId_demande()}"></td>
+                        <td th:text="${dev.getDate_creation()}"></td>
+                        <td th:text="${dev.getTypeDevis().getLibelle()}"></td>
+                        <td><a th:href="@{/update-devis/{id_devis}(id_devis=${dev.getId_devis()})}">Modifier</a></td>
+                        <td th:if="${dev.getTypeDevis().getLibelle() == 'Etude'}">
+                            <a th:href="@{/accepter-devis/{id_devis}(id_devis=${dev.getId_devis()})}">Accepter</a> |
+                            <a th:href="@{/refuser-devis/{id_devis}(id_devis=${dev.getId_devis()})}">Refuser</a>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>

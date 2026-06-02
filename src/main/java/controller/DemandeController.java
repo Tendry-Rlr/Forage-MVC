@@ -2,7 +2,10 @@ package controller;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import entity.Client;
@@ -22,6 +26,7 @@ import entity.Demande;
 import entity.DemandeStatut;
 import entity.Devis;
 import entity.Statut;
+import model.DemandeAlerte;
 import service.ClientService;
 import service.CommuneService;
 import service.DemandeService;
@@ -207,7 +212,18 @@ public class DemandeController {
     @ResponseBody
     public String toJSON(@PathVariable("id_demande") Integer id_demande) {
         Demande demande = demandeService.findById(id_demande);
-        DemandeStatut demandeStatut = demandeStatutService.findByDemandeStatutByStatut(id_demande, 7);
+        DemandeStatut demandeRefuse = demandeStatutService.findByDemandeStatutByStatut(id_demande, 7),
+                demandeAccepte = demandeStatutService.findByDemandeStatutByStatut(id_demande, 3);
+
+        int etat = 0;
+        // n'afficher forage que si la demande etude est acceptee
+        if (demandeAccepte == null) {
+            etat = 1;
+        }
+        if (demandeRefuse != null) {
+            etat = 1;
+        }
+
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode response = mapper.createObjectNode();
 
@@ -227,7 +243,10 @@ public class DemandeController {
         response.set("demande", demandeNode);
 
         // ajout de l'attribut `devis_rejete` (1 si existe, sinon 0)
-        response.put("devis_rejete", demandeStatut != null ? 1 : 0);
+        if (demandeAccepte == null) {
+
+        }
+        response.put("devis_rejete", etat);
 
         String json = null;
 
@@ -301,5 +320,34 @@ public class DemandeController {
         demandeStatutService.save(ds);
 
         return "redirect:/listeDemande";
+    }
+
+    @GetMapping("/demandes-alerte/{id_demande}")
+    @ResponseBody
+    public String demande_alerte(@PathVariable("id_demande") Integer id_demande) {
+        List<DemandeAlerte> liste = demandeService.demandeAlerte(id_demande);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            List<Map<String, Object>> dto = new ArrayList<>();
+
+            for (DemandeAlerte alerte : liste) {
+                Map<String, Object> row = new HashMap<>();
+                row.put("alerte", alerte.getAlerte());
+
+                DemandeStatut ds = alerte.getDemandeStatut();
+                row.put("id_demande_statut", ds.getId_demande_statut());
+                row.put("duree_travaille", ds.getDuree_travaille());
+                row.put("date", ds.getDate().toString());
+                row.put("id_statut", ds.getStatut().getId_statut());
+                row.put("libelle_statut", ds.getStatut().getLibelle());
+
+                dto.add(row);
+            }
+
+            return mapper.writeValueAsString(dto);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return "[]";
+        }
     }
 }

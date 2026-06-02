@@ -51,6 +51,14 @@ public class DemandeStatutService {
         return this.repository.findDemandeStatutByCurrentDate(id_demande);
     }
 
+    public DemandeStatut findByIdStatutAIdDemande(Integer iddemande, Integer idstatut) {
+        return this.repository.findByIdStatutAIdDemande(iddemande, idstatut);
+    }
+    
+    public DemandeStatut findById(Integer id) {
+        return this.repository.findById(id).orElse(null);
+    }
+
     public void deleteById(Integer id) {
         repository.deleteById(id);
     }
@@ -107,7 +115,8 @@ public class DemandeStatutService {
                 // System.out.println("Last day " + diff + "h");
             }
         }
-        return heure;
+        // en minute
+        return heure * 60;
     }
 
     public LocalDateTime formate(LocalTime debut, LocalTime fin, LocalDateTime verif) {

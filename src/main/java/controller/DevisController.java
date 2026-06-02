@@ -197,4 +197,28 @@ public class DevisController {
         return "redirect:/listeDevis";
     }
 
+    @GetMapping("/accepter-devis/{id_devis}")
+    public String accept(@PathVariable("id_devis") Integer id_devis) {
+        Devis devis = devisService.findById(id_devis);
+        Statut statut = statutService.findById(3);
+
+        LocalDateTime now = LocalDateTime.now();
+        DemandeStatut demandeStatut = new DemandeStatut(now, devis.getDemande(), statut);
+        demandeStatutService.save(demandeStatut);
+
+        return "redirect:/listeDevis";
+    }
+
+    @GetMapping("/refuser-devis/{id_devis}")
+    public String reject(@PathVariable("id_devis") Integer id_devis) {
+        Devis devis = devisService.findById(id_devis);
+        Statut statut = statutService.findById(4);
+
+        LocalDateTime now = LocalDateTime.now();
+        DemandeStatut demandeStatut = new DemandeStatut(now, devis.getDemande(), statut);
+        demandeStatutService.save(demandeStatut);
+
+        return "redirect:/listeDevis";
+    }
+
 }
