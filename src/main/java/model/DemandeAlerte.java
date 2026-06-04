@@ -1,10 +1,18 @@
 package model;
 
 import entity.DemandeStatut;
+import entity.Statut;
 
 public class DemandeAlerte {
     private DemandeStatut demandeStatut;
     private String alerte;
+    private Statut statut;
+
+    public DemandeAlerte(DemandeStatut demandeStatut, String alerte, Statut statut) {
+        this.demandeStatut = demandeStatut;
+        this.alerte = alerte;
+        this.statut = statut;
+    }
 
     public DemandeAlerte(DemandeStatut demandeStatut, String alerte) {
         this.demandeStatut = demandeStatut;
@@ -13,6 +21,14 @@ public class DemandeAlerte {
 
     public DemandeAlerte() {
 
+    }
+
+    public Statut getStatut() {
+        return statut;
+    }
+
+    public void setStatut(Statut statut) {
+        this.statut = statut;
     }
 
     public DemandeStatut getDemandeStatut() {

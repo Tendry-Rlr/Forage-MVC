@@ -7,10 +7,12 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.tags.ParamAware;
 
 import entity.Demande;
 import entity.DemandeStatut;
 import entity.Parametre;
+import entity.Statut;
 import repository.DemandeRepository;
 
 import jakarta.transaction.Transactional;
@@ -24,12 +26,14 @@ public class DemandeService {
 
     private final ParametreService parametreService;
     private final DemandeStatutService demandeStatutService;
+    private final StatutService statutService;
 
     public DemandeService(DemandeRepository repository, ParametreService parametreService,
-            DemandeStatutService demandeStatutService) {
+            DemandeStatutService demandeStatutService, StatutService statutService) {
         this.repository = repository;
         this.parametreService = parametreService;
         this.demandeStatutService = demandeStatutService;
+        this.statutService = statutService;
     }
 
     public List<Demande> findAll() {
@@ -80,7 +84,7 @@ public class DemandeService {
 
                 // Vérifier si on a déjà une alerte pour ce statut
                 if (!alertesMap.containsKey(statutId)) {
-                    alertesMap.put(statutId, new DemandeAlerte(existingStatut, "En attente"));
+                    alertesMap.put(statutId, new DemandeAlerte(existingStatut, "Pas de correspondance"));
                 }
                 continue;
             }
@@ -96,22 +100,35 @@ public class DemandeService {
             }
 
             String alerte = this.defineAlerte(parametre, dt);
+            Statut autre = statutService.findById(idStatut1);
 
             // Utiliser l'ID du statut2 comme clé (ou l'ID du DemandeStatut)
             int key = ds2.getId_demande_statut();
 
             // Ne garder que la première alerte pour chaque DemandeStatut
             if (!alertesMap.containsKey(key)) {
-                alertesMap.put(key, new DemandeAlerte(ds2, alerte));
+                alertesMap.put(key, new DemandeAlerte(ds2, alerte, autre));
             }
         }
 
         return new ArrayList<>(alertesMap.values());
     }
 
-    public String defineAlerte(Parametre dt1, double dt2) {
-        if (dt1.getDuree_travaille() <= dt2) {
-            return dt1.getAlerte();
+    public String defineAlerte(Parametre param, double dt) {
+        List<Parametre> liste = parametreService.findByStatuts(param.getStatut1().getId_statut(),
+                param.getStatut2().getId_statut());
+        Parametre init = liste.get(0), last = liste.get(liste.size() - 1);
+        if (init.getDuree_travaille() >= dt) {
+            return "Pas d'alerte";
+        }
+        if (dt > last.getDuree_travaille()) {
+            return last.getAlerte();
+        }
+        for (int i = 1; i < liste.size(); i++) {
+            Parametre old = liste.get(i - 1), current = liste.get(i);
+            if (old.getDuree_travaille() <= dt && current.getDuree_travaille() > dt) {
+                return old.getAlerte();
+            }
         }
         return "Pas d'alerte";
     }

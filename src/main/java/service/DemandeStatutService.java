@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,55 +73,107 @@ public class DemandeStatutService {
         repository.save(d);
     }
 
+    // public double calculDT(DemandeStatut demandeStatut) {
+    // double heure = 0, diff = 0;
+    // DemandeStatut ds =
+    // this.findByCurrentStatut(demandeStatut.getDemande().getId_demande());
+    // if (ds == null) {
+    // return 0;
+    // }
+
+    // LocalTime intervalle_debut = LocalTime.of(8, 0);
+    // LocalTime intervalle_fin = LocalTime.of(16, 0);
+
+    // LocalDateTime ancien = ds.getDate();
+    // LocalDateTime nouveau = demandeStatut.getDate();
+
+    // ancien = this.formate(intervalle_debut, intervalle_fin, ancien);
+    // nouveau = this.formate(intervalle_debut, intervalle_fin, nouveau);
+
+    // if (ancien.getDayOfMonth() == nouveau.getDayOfMonth()) {
+    // // System.out.println("meme jour");
+    // heure = nouveau.getHour() - ancien.getHour();
+    // } else {
+    // // System.out.println("jour differente");
+    // long weekend = this.nombreJoursWeekend(ancien.toLocalDate(),
+    // nouveau.toLocalDate());
+    // long jours = java.time.temporal.ChronoUnit.DAYS.between(ancien.toLocalDate(),
+    // nouveau.toLocalDate());
+    // jours -= weekend;
+    // // System.out.println(jours);
+
+    // double active = intervalle_fin.getHour() - intervalle_debut.getHour();
+    // heure += jours * active;
+    // // System.out.println("Middle days : " + heure + "h");
+
+    // LocalTime ancienTime = ancien.toLocalTime(),
+    // nouveauTime = nouveau.toLocalTime();
+
+    // if ((ancienTime.isAfter(intervalle_debut) ||
+    // (ancienTime.equals(intervalle_debut)) &&
+    // (ancienTime.isBefore(intervalle_fin)) ||
+    // (ancienTime.equals(intervalle_fin)))) {
+    // diff = intervalle_fin.getHour() - ancienTime.getHour();
+    // heure += diff;
+    // // System.out.println("First day " + diff + "h");
+    // }
+    // if ((nouveauTime.isAfter(intervalle_debut) ||
+    // nouveauTime.equals(intervalle_debut)) &&
+    // (nouveauTime.isBefore(intervalle_fin) ||
+    // (nouveauTime.equals(intervalle_fin)))) {
+    // diff = nouveauTime.getHour() - intervalle_debut.getHour();
+    // heure += diff;
+    // // System.out.println("Last day " + diff + "h");
+    // }
+    // }
+    // // en minute
+    // return heure * 60;
+    // }
+
     public double calculDT(DemandeStatut demandeStatut) {
-        double heure = 0, diff = 0;
         DemandeStatut ds = this.findByCurrentStatut(demandeStatut.getDemande().getId_demande());
         if (ds == null) {
             return 0;
         }
 
-        LocalTime intervalle_debut = LocalTime.of(8, 0);
-        LocalTime intervalle_fin = LocalTime.of(16, 0);
+        LocalTime travailDebut = LocalTime.of(8, 0);
+        LocalTime travailFin = LocalTime.of(16, 0);
 
         LocalDateTime ancien = ds.getDate();
         LocalDateTime nouveau = demandeStatut.getDate();
 
-        ancien = this.formate(intervalle_debut, intervalle_fin, ancien);
-        nouveau = this.formate(intervalle_debut, intervalle_fin, nouveau);
+        // Formater (gardez votre méthode)
+        ancien = this.formate(travailDebut, travailFin, ancien);
+        nouveau = this.formate(travailDebut, travailFin, nouveau);
 
-        if (ancien.getDayOfMonth() == nouveau.getDayOfMonth()) {
-            // System.out.println("meme jour");
-            heure = nouveau.getHour() - ancien.getHour();
+        // Utiliser LocalDate.equals() pas getDayOfMonth()
+        if (ancien.toLocalDate().equals(nouveau.toLocalDate())) {
+            // Utiliser les minutes
+            long minutes = ChronoUnit.MINUTES.between(ancien, nouveau);
+            return minutes;
         } else {
-            // System.out.println("jour differente");
+            // Calcul pour jours différents
             long weekend = this.nombreJoursWeekend(ancien.toLocalDate(), nouveau.toLocalDate());
-            long jours = java.time.temporal.ChronoUnit.DAYS.between(ancien.toLocalDate(),
-                    nouveau.toLocalDate());
+            long jours = ChronoUnit.DAYS.between(ancien.toLocalDate(), nouveau.toLocalDate());
+            // ne pas compter le dernier jours
+            jours -= 1;
             jours -= weekend;
-            // System.out.println(jours);
 
-            double active = intervalle_fin.getHour() - intervalle_debut.getHour();
-            heure += jours * active;
-            // System.out.println("Middle days : " + heure + "h");
+            double heuresParJour = travailFin.getHour() - travailDebut.getHour(); // 8h
+            double minute = (jours * heuresParJour) * 60;
 
-            LocalTime ancienTime = ancien.toLocalTime(),
-                    nouveauTime = nouveau.toLocalTime();
+            // Premier jour
+            long minutesPremierJour = ChronoUnit.MINUTES.between(ancien, ancien.with(travailFin));
+            minute += minutesPremierJour;
 
-            if ((ancienTime.isAfter(intervalle_debut) || (ancienTime.equals(intervalle_debut)) &&
-                    (ancienTime.isBefore(intervalle_fin)) || (ancienTime.equals(intervalle_fin)))) {
-                diff = intervalle_fin.getHour() - ancienTime.getHour();
-                heure += diff;
-                // System.out.println("First day " + diff + "h");
+            // Dernier jour
+            long minutesDernierJour = ChronoUnit.MINUTES.between(nouveau.with(travailDebut), nouveau);
+            if (minutesDernierJour > 0) {
+                minute += minutesDernierJour;
             }
-            if ((nouveauTime.isAfter(intervalle_debut) || nouveauTime.equals(intervalle_debut)) &&
-                    (nouveauTime.isBefore(intervalle_fin) || (nouveauTime.equals(intervalle_fin)))) {
-                diff = nouveauTime.getHour() - intervalle_debut.getHour();
-                heure += diff;
-                // System.out.println("Last day " + diff + "h");
-            }
+
+            return minute;
         }
-        // en minute
-        return heure * 60;
     }
 
     public long nombreJoursWeekend(LocalDate dateDebut, LocalDate dateFin) {

@@ -2,6 +2,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
 public class Temps {
     public static LocalDateTime formate(LocalTime debut, LocalTime fin, LocalDateTime verif) {
@@ -27,59 +28,50 @@ public class Temps {
         if (dateSpecifique.getDayOfWeek() == DayOfWeek.SUNDAY || dateSpecifique.getDayOfWeek() == DayOfWeek.SATURDAY) {
             System.out.println("weekend");
         }
-        LocalDateTime ancien = LocalDateTime.of(2026, 05, 30, 7, 00),
-                nouveau = LocalDateTime.of(2026, 06, 30, 22, 00);
-        
+        LocalDateTime ancien = LocalDateTime.of(2026, 06, 04, 15, 10),
+                nouveau = LocalDateTime.of(2026, 06, 4, 18, 00);
+
         double heure = 0, diff = 0;
         ancien = Temps.formate(intervalle_debut, intervalle_fin, ancien);
         nouveau = Temps.formate(intervalle_debut, intervalle_fin, nouveau);
 
-        if (ancien.getDayOfMonth() == nouveau.getDayOfMonth()) {
-            System.out.println("meme jour");
-            heure = nouveau.getHour() - ancien.getHour();
-            System.out.println(ancien.getDayOfWeek());
+        double minutes = 0;
+        if (ancien.toLocalDate().equals(nouveau.toLocalDate())) {
+            // Utiliser les minutes, pas seulement les heures
+            minutes = ChronoUnit.MINUTES.between(ancien, nouveau);
         } else {
-            System.out.println("jour differente");
-            long jours = java.time.temporal.ChronoUnit.DAYS.between(ancien.toLocalDate(),
-                    nouveau.toLocalDate());
-            System.out.println(jours);
+            // Calcul pour jours différents
+            long weekend = ancien.nombreJoursWeekend(ancien.toLocalDate(), nouveau.toLocalDate());
+            long jours = ChronoUnit.DAYS.between(ancien.toLocalDate(), nouveau.toLocalDate());
+            jours -= weekend;
 
-            double active = intervalle_fin.getHour() - intervalle_debut.getHour();
-            heure += jours * active;
-            System.out.println("Middle days : " + heure + "h");
+            double heuresParJour = travailFin.getHour() - travailDebut.getHour(); // 8h
+            minutes = (jours * heuresParJour) * 60;
 
-            LocalTime ancienTime = ancien.toLocalTime(),
-                    nouveauTime = nouveau.toLocalTime();
+            // Premier jour
+            long minutesPremierJour = ChronoUnit.MINUTES.between(ancien, ancien.with(travailFin));
+            minutes += minutesPremierJour;
 
-            // tokony misy egalite
-            if ((ancienTime.isAfter(intervalle_debut) || (ancienTime.equals(intervalle_debut)) &&
-                    (ancienTime.isBefore(intervalle_fin)) || (ancienTime.equals(intervalle_fin)))) {
-                diff = intervalle_fin.getHour() - ancienTime.getHour();
-                heure += diff;
-                System.out.println("First day " + diff + "h");
+            // Dernier jour
+            long minutesDernierJour = ChronoUnit.MINUTES.between(nouveau.with(travailDebut), nouveau);
+            if (minutesDernierJour > 0) {
+                minutes += minutesDernierJour;
             }
-            if ((nouveauTime.isAfter(intervalle_debut) || nouveauTime.equals(intervalle_debut)) &&
-                    (nouveauTime.isBefore(intervalle_fin) || (nouveauTime.equals(intervalle_fin)))) {
-                diff = nouveauTime.getHour() - intervalle_debut.getHour();
-                heure += diff;
-                System.out.println("Last day " + diff + "h");
-            }
-        }
-        heure *= 60;
-        System.out.println(heure);
+            System.out.println(minutes);
 
-        long nombre = 0;
-        LocalDate current = ancien.toLocalDate();
+            long nombre = 0;
+            LocalDate current = ancien.toLocalDate();
 
-        while (!current.isAfter(nouveau.toLocalDate())) {
-            DayOfWeek jour = current.getDayOfWeek();
-            if (jour == DayOfWeek.SATURDAY || jour == DayOfWeek.SUNDAY) {
-                nombre++;
+            while (!current.isAfter(nouveau.toLocalDate())) {
+                DayOfWeek jour = current.getDayOfWeek();
+                if (jour == DayOfWeek.SATURDAY || jour == DayOfWeek.SUNDAY) {
+                    nombre++;
+                }
+                current = current.plusDays(1);
             }
-            current = current.plusDays(1);
+
+            System.out.println(nombre);
         }
 
-        System.out.println(nombre);
     }
-
 }

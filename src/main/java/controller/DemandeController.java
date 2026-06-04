@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import entity.Client;
@@ -338,7 +337,8 @@ public class DemandeController {
                 row.put("id_demande_statut", ds.getId_demande_statut());
                 row.put("duree_travaille", ds.getDuree_travaille());
                 row.put("date", ds.getDate().toString());
-                row.put("id_statut", ds.getStatut().getId_statut());
+                row.put("id_statut1", alerte.getStatut() != null ? alerte.getStatut().getId_statut() : "none");
+                row.put("id_statut2", ds.getStatut().getId_statut());
                 row.put("libelle_statut", ds.getStatut().getLibelle());
 
                 dto.add(row);

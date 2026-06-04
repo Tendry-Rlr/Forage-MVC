@@ -23,4 +23,7 @@ public class ParametreService {
         return this.parametreRepository.findAll();
     }
 
+    public List<Parametre> findByStatuts(Integer statut1, Integer statut2) {
+        return this.parametreRepository.findByStatuts(statut1, statut2);
+    }
 }

@@ -54,7 +54,7 @@ public class DevisController {
         model.addAttribute("devis", devis);
         return "liste-devis";
     }
-
+    
     @GetMapping("/to-devis")
     public String voir_devis(Model model) {
         List<TypeDevis> types = typeDevisService.findAll();
