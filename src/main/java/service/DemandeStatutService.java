@@ -1,5 +1,7 @@
 package service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -54,7 +56,7 @@ public class DemandeStatutService {
     public DemandeStatut findByIdStatutAIdDemande(Integer iddemande, Integer idstatut) {
         return this.repository.findByIdStatutAIdDemande(iddemande, idstatut);
     }
-    
+
     public DemandeStatut findById(Integer id) {
         return this.repository.findById(id).orElse(null);
     }
@@ -91,8 +93,10 @@ public class DemandeStatutService {
             heure = nouveau.getHour() - ancien.getHour();
         } else {
             // System.out.println("jour differente");
+            long weekend = this.nombreJoursWeekend(ancien.toLocalDate(), nouveau.toLocalDate());
             long jours = java.time.temporal.ChronoUnit.DAYS.between(ancien.toLocalDate(),
                     nouveau.toLocalDate());
+            jours -= weekend;
             // System.out.println(jours);
 
             double active = intervalle_fin.getHour() - intervalle_debut.getHour();
@@ -117,6 +121,20 @@ public class DemandeStatutService {
         }
         // en minute
         return heure * 60;
+    }
+
+    public long nombreJoursWeekend(LocalDate dateDebut, LocalDate dateFin) {
+        long nombre = 0;
+        LocalDate current = dateDebut;
+
+        while (!current.isAfter(dateFin)) {
+            DayOfWeek jour = current.getDayOfWeek();
+            if (jour == DayOfWeek.SATURDAY || jour == DayOfWeek.SUNDAY) {
+                nombre++;
+            }
+            current = current.plusDays(1);
+        }
+        return nombre;
     }
 
     public LocalDateTime formate(LocalTime debut, LocalTime fin, LocalDateTime verif) {

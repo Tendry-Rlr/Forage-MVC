@@ -1,3 +1,5 @@
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -18,11 +20,16 @@ public class Temps {
         LocalTime intervalle_fin = LocalTime.of(16, 0);
 
         // 12 Décembre 2026 à 14h30
-        LocalDateTime dateSpecifique = LocalDateTime.of(2026, 12, 12, 14, 30);
+        LocalDateTime dateSpecifique = LocalDateTime.of(2026, 05, 31, 14, 30);
 
-        LocalDateTime ancien = LocalDateTime.of(2026, 05, 20, 7, 00),
-                nouveau = LocalDateTime.of(2026, 05, 22, 22, 00);
-
+        System.out.println(dateSpecifique.getDayOfWeek());
+        dateSpecifique.getDayOfWeek();
+        if (dateSpecifique.getDayOfWeek() == DayOfWeek.SUNDAY || dateSpecifique.getDayOfWeek() == DayOfWeek.SATURDAY) {
+            System.out.println("weekend");
+        }
+        LocalDateTime ancien = LocalDateTime.of(2026, 05, 30, 7, 00),
+                nouveau = LocalDateTime.of(2026, 06, 30, 22, 00);
+        
         double heure = 0, diff = 0;
         ancien = Temps.formate(intervalle_debut, intervalle_fin, ancien);
         nouveau = Temps.formate(intervalle_debut, intervalle_fin, nouveau);
@@ -30,7 +37,7 @@ public class Temps {
         if (ancien.getDayOfMonth() == nouveau.getDayOfMonth()) {
             System.out.println("meme jour");
             heure = nouveau.getHour() - ancien.getHour();
-
+            System.out.println(ancien.getDayOfWeek());
         } else {
             System.out.println("jour differente");
             long jours = java.time.temporal.ChronoUnit.DAYS.between(ancien.toLocalDate(),
@@ -58,8 +65,21 @@ public class Temps {
                 System.out.println("Last day " + diff + "h");
             }
         }
-
+        heure *= 60;
         System.out.println(heure);
+
+        long nombre = 0;
+        LocalDate current = ancien.toLocalDate();
+
+        while (!current.isAfter(nouveau.toLocalDate())) {
+            DayOfWeek jour = current.getDayOfWeek();
+            if (jour == DayOfWeek.SATURDAY || jour == DayOfWeek.SUNDAY) {
+                nombre++;
+            }
+            current = current.plusDays(1);
+        }
+
+        System.out.println(nombre);
     }
 
 }
