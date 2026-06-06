@@ -30,7 +30,9 @@ public class DemandeStatutService {
     }
 
     public DemandeStatut save(DemandeStatut demandeStatut) {
-        double dt = this.calculDT(demandeStatut);
+        DemandeStatut ds = this.findByCurrentStatut(demandeStatut.getDemande().getId_demande());
+        double dt = this.calculDT(demandeStatut, ds);
+
         demandeStatut.setDuree_travaille(dt);
         if (demandeStatut.getObservation() == null) {
             demandeStatut.setObservation("Pas d'observation");
@@ -38,8 +40,18 @@ public class DemandeStatutService {
         return repository.save(demandeStatut);
     }
 
+    public void update(DemandeStatut nouveau, DemandeStatut ancien) {
+        double dt = this.calculDT(nouveau, ancien);
+        nouveau.setDuree_travaille(dt);
+        repository.save(nouveau);
+    }
+
     public List<DemandeStatut> findByDemande(Integer id) {
         return repository.findByIdDemande(id);
+    }
+
+    public List<DemandeStatut> findByDemandeOrderByDate(Integer id) {
+        return repository.findByIdDemandeDateASC(id);
     }
 
     public DemandeStatut findDemandeStatutByDemande(Integer idd, Integer ids) {
@@ -73,65 +85,9 @@ public class DemandeStatutService {
         repository.save(d);
     }
 
-    // public double calculDT(DemandeStatut demandeStatut) {
-    // double heure = 0, diff = 0;
-    // DemandeStatut ds =
-    // this.findByCurrentStatut(demandeStatut.getDemande().getId_demande());
-    // if (ds == null) {
-    // return 0;
-    // }
+    public double calculDT(DemandeStatut demandeStatut, DemandeStatut ancienDs) {
+        DemandeStatut ds = ancienDs;
 
-    // LocalTime intervalle_debut = LocalTime.of(8, 0);
-    // LocalTime intervalle_fin = LocalTime.of(16, 0);
-
-    // LocalDateTime ancien = ds.getDate();
-    // LocalDateTime nouveau = demandeStatut.getDate();
-
-    // ancien = this.formate(intervalle_debut, intervalle_fin, ancien);
-    // nouveau = this.formate(intervalle_debut, intervalle_fin, nouveau);
-
-    // if (ancien.getDayOfMonth() == nouveau.getDayOfMonth()) {
-    // // System.out.println("meme jour");
-    // heure = nouveau.getHour() - ancien.getHour();
-    // } else {
-    // // System.out.println("jour differente");
-    // long weekend = this.nombreJoursWeekend(ancien.toLocalDate(),
-    // nouveau.toLocalDate());
-    // long jours = java.time.temporal.ChronoUnit.DAYS.between(ancien.toLocalDate(),
-    // nouveau.toLocalDate());
-    // jours -= weekend;
-    // // System.out.println(jours);
-
-    // double active = intervalle_fin.getHour() - intervalle_debut.getHour();
-    // heure += jours * active;
-    // // System.out.println("Middle days : " + heure + "h");
-
-    // LocalTime ancienTime = ancien.toLocalTime(),
-    // nouveauTime = nouveau.toLocalTime();
-
-    // if ((ancienTime.isAfter(intervalle_debut) ||
-    // (ancienTime.equals(intervalle_debut)) &&
-    // (ancienTime.isBefore(intervalle_fin)) ||
-    // (ancienTime.equals(intervalle_fin)))) {
-    // diff = intervalle_fin.getHour() - ancienTime.getHour();
-    // heure += diff;
-    // // System.out.println("First day " + diff + "h");
-    // }
-    // if ((nouveauTime.isAfter(intervalle_debut) ||
-    // nouveauTime.equals(intervalle_debut)) &&
-    // (nouveauTime.isBefore(intervalle_fin) ||
-    // (nouveauTime.equals(intervalle_fin)))) {
-    // diff = nouveauTime.getHour() - intervalle_debut.getHour();
-    // heure += diff;
-    // // System.out.println("Last day " + diff + "h");
-    // }
-    // }
-    // // en minute
-    // return heure * 60;
-    // }
-
-    public double calculDT(DemandeStatut demandeStatut) {
-        DemandeStatut ds = this.findByCurrentStatut(demandeStatut.getDemande().getId_demande());
         if (ds == null) {
             return 0;
         }
@@ -142,7 +98,6 @@ public class DemandeStatutService {
         LocalDateTime ancien = ds.getDate();
         LocalDateTime nouveau = demandeStatut.getDate();
 
-        // Formater (gardez votre méthode)
         ancien = this.formate(travailDebut, travailFin, ancien);
         nouveau = this.formate(travailDebut, travailFin, nouveau);
 

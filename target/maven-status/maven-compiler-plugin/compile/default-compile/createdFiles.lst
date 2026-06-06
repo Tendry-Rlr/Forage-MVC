@@ -24,11 +24,13 @@ entity/District.class
 repository/TypeDevisRepository.class
 repository/StatutRepository.class
 service/StatutService.class
+controller/DemandeStatutController.class
 repository/DistrictRepository.class
 service/DevisMaterielService.class
 service/DemandeStatutService.class
 service/CommuneService.class
 entity/TypeDevis.class
+controller/ClientController.class
 repository/ClientRepository.class
 entity/Demande.class
 config/WebAppInitializer.class

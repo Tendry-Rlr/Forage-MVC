@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste client</title>
+    <link rel="stylesheet" th:href="@{/ressources/css/style.css}">
+</head>
+
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container">
+        <div class="form-card">
+            <div class="card-header">
+                <h4>Liste des clients</h4>
+            </div>
+            <div class="card-body">
+
+                <table border="1">
+                    <tr>
+                        <th>Id demande statut</th>
+                        <th>Id demande</th>
+                        <th>Statut</th>
+                        <th>Date</th>
+                        <th>Duree Travaille</th>
+                        <th>Action</th>
+                    </tr>
+
+                    <tr th:each="demandeStatut : ${demandeStatuts}">
+                        <td th:text="${demandeStatut.getId_demande_statut()}"></td>
+                        <td th:text="${demandeStatut.getDemande().getId_demande()}"></td>
+                        <td th:text="${demandeStatut.getStatut().getLibelle()}"></td>
+                        <td th:text="${demandeStatut.getDate()}"></td>
+                        <td th:text="${demandeStatut.getDuree_travaille()}"></td>
+                        <td><a
+                                th:href="@{/updateForm/{id_demande_statut}(id_demande_statut=${demandeStatut.getId_demande_statut()})}">Modifier</a>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -134,6 +134,29 @@ public class DemandeController {
         return "liste-demande";
     }
 
+    @GetMapping("/listeDemandeByClient/{id_client}")
+    public String listeDemandeByClient(Model model, @PathVariable("id_client") Integer id_client) {
+        Client client = clientService.findClientDemandes(id_client);
+        model.addAttribute("client", client);
+
+        // List<DemandeStatut> demandeStatuts = new ArrayList<>();
+        // for (Demande demande : client.getDemandes()) {
+        // demandeStatuts.add(demandeStatutService.findByCurrentStatut(demande.getId_demande()));
+        // }
+        // model.addAttribute("demandeStatus", demandeStatuts);
+
+        return "demande-client";
+    }
+
+    @GetMapping("/demandeStatutByDemande/{id_demande}")
+    public String demandeStatutByDemande(Model model, @PathVariable("id_demande") Integer id_demande) {
+        Demande demande = demandeService.findById(id_demande);
+        List<DemandeStatut> ds = demandeStatutService.findByDemande(id_demande);
+        model.addAttribute("demande", demande);
+        model.addAttribute("ds", ds);
+        return "demandestatut";
+    }
+
     @GetMapping("/supprimer/{id_demande}")
     public String removeDemande(@PathVariable("id_demande") Integer id_demande) {
         List<DemandeStatut> demandeStatus = demandeStatutService.findByDemande(id_demande);

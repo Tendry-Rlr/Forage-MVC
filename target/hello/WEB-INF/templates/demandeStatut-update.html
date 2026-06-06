@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/ressources/css/style.css}">
+    <title>devis</title>
+</head>
+
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container">
+        <div class="form-card">
+            <div class="card-header">
+                <h4>Infos sur ce demande statut</h4>
+                <p th:text="${demandeStatut.getId_demande_statut()}"></p>
+                <p th:text="${demandeStatut.getDemande().getId_demande()}"></p>
+                <p th:text="${demandeStatut.getStatut().getLibelle()}"></p>
+                <p th:text="${demandeStatut.getDate()}"></p>
+                <p th:text="${demandeStatut.getDuree_travaille()}"></p>
+
+            </div>
+
+            <div class="card-header">
+                <h4>Mise a jour de demande statut</h4>
+            </div>
+            <div class="card-body">
+
+                <form th:action="@{/update-demandeStatut}" method="post" id="formulaire">
+                    <p>Date <input type="datetime-local" name="date"
+                            th:value="${demandeStatut.getDate() != null ? #temporals.format(demandeStatut.getDate(), 'yyyy-MM-dd''T''HH:mm') : ''}">
+                    </p>
+                    <input type="hidden" name="id_demande_statut" th:value="${demandeStatut.getId_demande_statut()}">
+                    <input type="hidden" name="id_demande"
+                        th:value="${demandeStatut.getDemande().getId_demande()}">
+                    <input class="btn-submit" type="submit" value="Enregistrer ce demande statut">
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

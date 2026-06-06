@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste client</title>
+    <link rel="stylesheet" th:href="@{/ressources/css/style.css}">
+</head>
+
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container">
+        <div class="form-card">
+            <div class="card-header">
+                <h4>Liste des clients</h4>
+            </div>
+            <div class="card-body">
+
+                <table border="1">
+                    <tr>
+                        <th>Id client</th>
+                        <th>Nom</th>
+                        <th>Adresse</th>
+                        <th>Contact</th>
+                        <th>Action</th>
+                    </tr>
+
+                    <tr th:each="client : ${clients}">
+                        <td th:text="${client.getId_client()}"></td>
+                        <td th:text="${client.getNom_client()}"></td>
+                        <td th:text="${client.getAdresse()}"></td>
+                        <td th:text="${client.getContact()}"></td>
+                        <td><a th:href="@{/listeDemandeByClient/{id_client}(id_client=${client.getId_client()})}">Voir demande</a>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

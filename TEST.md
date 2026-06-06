@@ -10,3 +10,6 @@ jour1 : 50
 zoma : 8 * 60
 lundi : 8 * 60 
 mardi : 5 * 60 + 2 
+
+
+

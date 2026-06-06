@@ -49,10 +49,18 @@ dans la liste des devis etude : ajouter les boutons (ok)
 syntaxe : limit 1 sur DemandeStatutRepository
     solution : recuperer List en recuperer l'indice 0
 
-probleme doublon : demandeAlerte dans DemandeService (ok)
-
 calcul DT : weekend non inclue LocalDateTime (ok)
 
 affichage demandeAPI
     recuperer les informations de la demande 
     afficher son statut
+
+verification alerte : inegalite stricte / ouverte ?
+modification statut sa demandeStatut : tode manova ny dt ambanin le statut  rehetre ve
+
+afficher demandeStatut selon la demande : demandestatut.html
+
+
+----------
+debugger le calcul de DT : update demandeStatut (ok)
+verifier l'affichage d'alerte

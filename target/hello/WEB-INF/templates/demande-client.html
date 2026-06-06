@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste demande</title>
+    <link rel="stylesheet" th:href="@{/ressources/css/style.css}">
+</head>
+
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <div class="container">
+        <div class="form-card">
+            <div class="card-header">
+                <h4>Infos du client</h4>
+                <p th:text="${client.getId_client()}"></p>
+                <p th:text="${client.getNom_client()}"></p>
+                <p th:text="${client.getAdresse()}"></p>
+                <p th:text="${client.getContact()}"></p>
+
+            </div>
+            <div class="info"></div>
+        </div>
+        <div class="form-card">
+            <div class="card-header">
+                <h4>Les demandes du client</h4>
+            </div>
+            <div class="card-body">
+
+                <table border="1">
+                    <tr>
+                        <th>Id demande</th>
+                        <th>Commune</th>
+                        <th>Lieu</th>
+                        <th>Action</th>
+                    </tr>
+
+                    <tr th:each="demande : ${client.getDemandes()}">
+                        <td th:text="${demande.getId_demande()}"></td>
+                        <td th:text="${demande.getCommune().getLibelle()}"></td>
+                        <td th:text="${demande.getLieu()}"></td>
+                        <td><a th:href="@{/demandeStatutByDemande/{id_demande}(id_demande=${demande.getid_demande()})}">Voir
+                                demande statut</a></td>
+
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

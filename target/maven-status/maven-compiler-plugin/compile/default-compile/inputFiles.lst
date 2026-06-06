@@ -31,8 +31,10 @@
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/config/JpaConfig.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/service/DemandeService.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/repository/ParametreRepository.java
+/home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/controller/ClientController.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/repository/TypeDevisRepository.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/entity/Parametre.java
+/home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/controller/DemandeStatutController.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/service/DistrictService.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/repository/RegionRepository.java
 /home/tendry/ITU/Web Dynamique/Forage-MVC/src/main/java/entity/TypeDevis.java
