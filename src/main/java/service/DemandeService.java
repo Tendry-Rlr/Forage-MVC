@@ -1,6 +1,7 @@
 package service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,87 +61,94 @@ public class DemandeService {
     }
 
     public List<DemandeAlerte> demandeAlerte(Integer id_demande) {
-        List<Parametre> parametres = parametreService.findAll();
+        List<DemandeAlerte> resultat = new ArrayList<>();
 
-        // Utilisation d'une Map pour éviter les doublons naturellement
-        Map<Integer, DemandeAlerte> alertesMap = new HashMap<>();
+        // Récupérer tous les statuts de la demande triés par date
+        List<DemandeStatut> statutsDemande = demandeStatutService.findByDemandeOrderByDate(id_demande);
 
-        for (Parametre parametre : parametres) {
-            Integer idStatut1 = parametre.getStatut1().getId_statut();
-            Integer idStatut2 = parametre.getStatut2().getId_statut();
-
-            DemandeStatut ds1 = demandeStatutService.findByIdStatutAIdDemande(id_demande, idStatut1);
-            DemandeStatut ds2 = demandeStatutService.findByIdStatutAIdDemande(id_demande, idStatut2);
-
-            if (ds1 == null && ds2 == null) {
-                continue;
-            }
-
-            // Cas où un seul des deux statuts existe
-            if (ds1 == null || ds2 == null) {
-                DemandeStatut existingStatut = (ds2 != null) ? ds2 : ds1;
-                int statutId = existingStatut.getStatut().getId_statut();
-
-                // Vérifier si on a déjà une alerte pour ce statut
-                if (!alertesMap.containsKey(statutId)) {
-                    alertesMap.put(statutId, new DemandeAlerte(existingStatut, "Pas de correspondance"));
-                }
-                continue;
-            }
-
-            // Cas où les deux statuts existent
-            int ecart = idStatut2 - idStatut1;
-            double dt;
-
-            if (ecart > 1) {
-                dt = this.cumulDT(id_demande, idStatut1, idStatut2);
-            } else {
-                dt = ds2.getDuree_travaille();
-            }
-
-            String alerte = this.defineAlerte(parametre, dt);
-            Statut autre = statutService.findById(idStatut1);
-
-            // Utiliser l'ID du statut2 comme clé (ou l'ID du DemandeStatut)
-            int key = ds2.getId_demande_statut();
-
-            // Ne garder que la première alerte pour chaque DemandeStatut
-            if (!alertesMap.containsKey(key)) {
-                alertesMap.put(key, new DemandeAlerte(ds2, alerte, autre));
-            }
+        if (statutsDemande == null || statutsDemande.isEmpty()) {
+            return resultat;
         }
 
-        return new ArrayList<>(alertesMap.values());
+        // Parcourir les transitions entre statuts consécutifs
+        for (int i = 0; i < statutsDemande.size() - 1; i++) {
+            DemandeStatut courant = statutsDemande.get(i);
+            DemandeStatut suivant = statutsDemande.get(i + 1);
+
+            int idStatutCourant = courant.getStatut().getId_statut();
+            int idStatutSuivant = suivant.getStatut().getId_statut();
+
+            // Calculer le DT cumulé entre ces deux statuts
+            double dtCumule = cumulDT(id_demande, idStatutCourant, idStatutSuivant);
+
+            // Récupérer les paramètres pour ce couple
+            List<Parametre> parametresCouple = parametreService.findByStatuts(idStatutCourant, idStatutSuivant);
+
+            String alerte = "Pas d'alerte";
+
+            // Utiliser defineAlerte si des paramètres existent
+            if (parametresCouple != null && !parametresCouple.isEmpty()) {
+                // Prendre le premier paramètre (ou n'importe lequel car defineAlerte recherche
+                // tous)
+                alerte = defineAlerte(parametresCouple.get(0), dtCumule);
+            }
+
+            resultat.add(new DemandeAlerte(suivant, alerte, courant.getStatut()));
+        }
+        return resultat;
     }
 
     public String defineAlerte(Parametre param, double dt) {
-        List<Parametre> liste = parametreService.findByStatuts(param.getStatut1().getId_statut(),
+        List<Parametre> liste = parametreService.findByStatuts(
+                param.getStatut1().getId_statut(),
                 param.getStatut2().getId_statut());
-        Parametre init = liste.get(0), last = liste.get(liste.size() - 1);
-        if (init.getDuree_travaille() >= dt) {
+
+        if (liste == null || liste.isEmpty()) {
             return "Pas d'alerte";
         }
-        if (dt > last.getDuree_travaille()) {
-            return last.getAlerte();
+
+        // Trier par durée croissante
+        liste.sort(Comparator.comparingDouble(Parametre::getDuree_travaille));
+
+        if (dt < liste.get(0).getDuree_travaille()) {
+            return "Pas d'alerte";
         }
+        if (dt == liste.get(0).getDuree_travaille()) {
+            return liste.get(0).getAlerte();
+        }
+        
+        // Trouver le premier seuil dépassé
         for (int i = 1; i < liste.size(); i++) {
-            Parametre old = liste.get(i - 1), current = liste.get(i);
-            if (old.getDuree_travaille() <= dt && current.getDuree_travaille() > dt) {
-                return old.getAlerte();
+            if (dt == liste.get(i).getDuree_travaille()) {
+                return liste.get(i).getAlerte();
+            }
+            if (dt < liste.get(i).getDuree_travaille()) {
+                return liste.get(i - 1).getAlerte();
             }
         }
-        return "Pas d'alerte";
+
+        // Si dépasse tous les seuils
+        return liste.get(liste.size() - 1).getAlerte();
     }
 
     public double cumulDT(Integer id_demande, Integer id_statut1, Integer id_statut2) {
         double dt = 0;
-        for (int i = id_statut1; i <= id_statut2; i++) {
-            DemandeStatut ds = demandeStatutService.findByIdStatutAIdDemande(id_demande, i);
-            if (ds != null) {
+
+        List<DemandeStatut> statuts = demandeStatutService.findByDemandeOrderByDate(id_demande);
+        boolean commencer = false;
+        for (DemandeStatut ds : statuts) {
+            int idStatut = ds.getStatut().getId_statut();
+
+            if (idStatut == id_statut1) {
+                commencer = true;
+            }
+            if (commencer) {
                 dt += ds.getDuree_travaille();
+            }
+            if (idStatut == id_statut2) {
+                break;
             }
         }
         return dt;
     }
-
 }

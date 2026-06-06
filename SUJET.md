@@ -56,7 +56,6 @@ affichage demandeAPI
     afficher son statut
 
 verification alerte : inegalite stricte / ouverte ?
-modification statut sa demandeStatut : tode manova ny dt ambanin le statut  rehetre ve
 
 afficher demandeStatut selon la demande : demandestatut.html
 

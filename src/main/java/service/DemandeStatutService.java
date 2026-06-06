@@ -42,6 +42,9 @@ public class DemandeStatutService {
 
     public void update(DemandeStatut nouveau, DemandeStatut ancien) {
         double dt = this.calculDT(nouveau, ancien);
+        if (dt < 0) {
+            dt = 0;
+        }
         nouveau.setDuree_travaille(dt);
         repository.save(nouveau);
     }

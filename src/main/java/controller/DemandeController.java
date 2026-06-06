@@ -24,6 +24,7 @@ import entity.Commune;
 import entity.Demande;
 import entity.DemandeStatut;
 import entity.Devis;
+import entity.Parametre;
 import entity.Statut;
 import model.DemandeAlerte;
 import service.ClientService;
@@ -33,6 +34,7 @@ import service.DemandeStatutService;
 import service.DevisMaterielService;
 import service.DevisService;
 import service.DistrictService;
+import service.ParametreService;
 import service.RegionService;
 import service.StatutService;
 
@@ -47,11 +49,12 @@ public class DemandeController {
     private final DistrictService districtService;
     private final DevisService devisService;
     private final DevisMaterielService devisMaterielService;
+    private final ParametreService parametreService;
 
     public DemandeController(DemandeService demandeService, DemandeStatutService demandeStatutService,
             StatutService statutService, ClientService clientService, CommuneService communeService,
             RegionService regionService, DistrictService districtService, DevisService devisService,
-            DevisMaterielService devisMaterielService) {
+            DevisMaterielService devisMaterielService, ParametreService parametreService) {
         this.demandeService = demandeService;
         this.demandeStatutService = demandeStatutService;
         this.statutService = statutService;
@@ -61,6 +64,7 @@ public class DemandeController {
         this.districtService = districtService;
         this.devisService = devisService;
         this.devisMaterielService = devisMaterielService;
+        this.parametreService = parametreService;
     }
 
     @PostMapping("/insertDemande")
@@ -347,27 +351,44 @@ public class DemandeController {
     @GetMapping("/demandes-alerte/{id_demande}")
     @ResponseBody
     public String demande_alerte(@PathVariable("id_demande") Integer id_demande) {
-        List<DemandeAlerte> liste = demandeService.demandeAlerte(id_demande);
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            List<Map<String, Object>> dto = new ArrayList<>();
+        // Récupérer tous les DemandeStatut de la demande
+        List<DemandeStatut> statutsDemande = demandeStatutService.findByDemandeOrderByDate(id_demande);
 
-            for (DemandeAlerte alerte : liste) {
-                Map<String, Object> row = new HashMap<>();
-                row.put("alerte", alerte.getAlerte());
+        // Récupérer directement les alertes pour chaque DemandeStatut
+        List<Map<String, Object>> resultat = new ArrayList<>();
 
-                DemandeStatut ds = alerte.getDemandeStatut();
-                row.put("id_demande_statut", ds.getId_demande_statut());
-                row.put("duree_travaille", ds.getDuree_travaille());
-                row.put("date", ds.getDate().toString());
-                row.put("id_statut1", alerte.getStatut() != null ? alerte.getStatut().getId_statut() : "none");
-                row.put("id_statut2", ds.getStatut().getId_statut());
-                row.put("libelle_statut", ds.getStatut().getLibelle());
+        for (int i = 0; i < statutsDemande.size(); i++) {
+            DemandeStatut ds = statutsDemande.get(i);
 
-                dto.add(row);
+            Map<String, Object> row = new HashMap<>();
+            row.put("id_demande_statut", ds.getId_demande_statut());
+            row.put("id_demande", ds.getDemande().getId_demande());
+            row.put("libelle_statut", ds.getStatut().getLibelle());
+            row.put("date", ds.getDate().toString());
+            row.put("duree_travaille", ds.getDuree_travaille());
+
+            // Calculer l'alerte pour ce DemandeStatut (sauf le premier)
+            String alerte = "Pas d'alerte";
+            if (i > 0) {
+                DemandeStatut precedent = statutsDemande.get(i - 1);
+                double dtCumule = demandeService.cumulDT(id_demande, precedent.getStatut().getId_statut(),
+                        ds.getStatut().getId_statut());
+
+                List<Parametre> parametres = parametreService.findByStatuts(
+                        precedent.getStatut().getId_statut(),
+                        ds.getStatut().getId_statut());
+
+                if (parametres != null && !parametres.isEmpty()) {
+                    alerte = demandeService.defineAlerte(parametres.get(0), dtCumule);
+                }
             }
 
-            return mapper.writeValueAsString(dto);
+            row.put("alerte", alerte);
+            resultat.add(row);
+        }
+
+        try {
+            return new ObjectMapper().writeValueAsString(resultat);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return "[]";
