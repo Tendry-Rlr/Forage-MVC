@@ -41,7 +41,7 @@
                         <td th:text="${demande.getId_demande()}"></td>
                         <td th:text="${demande.getCommune().getLibelle()}"></td>
                         <td th:text="${demande.getLieu()}"></td>
-                        <td><a th:href="@{/demandeStatutByDemande/{id_demande}(id_demande=${demande.getid_demande()})}">Voir
+                        <td><a th:href="@{/demandes-alerte/{id_demande}(id_demande=${demande.getId_demande()})}">Voir
                                 demande statut</a></td>
 
                     </tr>

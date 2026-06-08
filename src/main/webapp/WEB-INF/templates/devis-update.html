@@ -32,7 +32,7 @@
                         value="0" min="0" required>
                 </label>
                 <label>Quantite
-                    <input type="number" name="quantite" th:value="${materiel.getQuantite()}" value="0" min="0"
+                    <input type="number" name="quantite" step="0.01" th:value="${materiel.getQuantite()}" value="0" min="0"
                         required>
                 </label>
                 <button type="button" class="btn-remove-row" onclick="this.closest('.materiel-row').remove()">Supprimer</button>
@@ -127,7 +127,7 @@
                 <input type="number" name="pU" step="0.01" value="0" min="0" required>
             </label>
             <label>Quantite
-                <input type="number" name="quantite" value="0" min="0" required>
+                <input type="number" name="quantite" step="0.01"  value="0" min="0" required>
             </label>
             <button type="button" class="btn-remove-row" onclick="this.closest('.materiel-row').remove()">Supprimer</button>
         </div>

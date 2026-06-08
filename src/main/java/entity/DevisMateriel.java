@@ -29,9 +29,9 @@ public class DevisMateriel {
     private double prix_unitaire;
 
     @Column(name = "quantite", nullable = false)
-    private int quantite;
+    private double quantite;
 
-    public DevisMateriel(Devis devis, String libelle, double prix_unitaire, int quantite) {
+    public DevisMateriel(Devis devis, String libelle, double prix_unitaire, double quantite) {
         this.devis = devis;
         this.libelle = libelle;
         this.prix_unitaire = prix_unitaire;
@@ -73,11 +73,11 @@ public class DevisMateriel {
         this.prix_unitaire = prix_unitaire;
     }
 
-    public int getQuantite() {
+    public double getQuantite() {
         return quantite;
     }
 
-    public void setQuantite(int quantite) {
+    public void setQuantite(double quantite) {
         this.quantite = quantite;
     }
 

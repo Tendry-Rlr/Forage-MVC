@@ -83,7 +83,7 @@ public class DevisController {
             @RequestParam("typeId") Integer id_type,
             @RequestParam("nom") String[] nom,
             @RequestParam("pU") Double[] pU,
-            @RequestParam("quantite") Integer[] quantite, Model model) {
+            @RequestParam("quantite") Double[] quantite, Model model) {
 
         String message = "";
         if (nom.length != pU.length || nom.length != quantite.length
@@ -147,7 +147,7 @@ public class DevisController {
             @RequestParam("typeId") Integer id_type,
             @RequestParam("nom") String[] nom,
             @RequestParam("pU") Double[] pU,
-            @RequestParam("quantite") Integer[] quantite, Model model) {
+            @RequestParam("quantite") Double[] quantite, Model model) {
 
         String message = "";
         if (nom.length != pU.length || nom.length != quantite.length
