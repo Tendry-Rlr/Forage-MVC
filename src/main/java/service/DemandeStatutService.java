@@ -148,6 +148,10 @@ public class DemandeStatutService {
         return nombre;
     }
 
+    public double sommeDT(Integer idDemande) {
+        return repository.sommeDT(idDemande);
+    }
+
     public LocalDateTime formate(LocalTime debut, LocalTime fin, LocalDateTime verif) {
         LocalTime test = verif.toLocalTime();
         if (test.isBefore(debut)) {

@@ -30,6 +30,9 @@ public class Parametre {
     @Column(name = "duree_travaille")
     private double duree_travaille;
 
+    @Column(name = "duree_travaille1")
+    private double duree_travaille1;
+
     @Column(name = "alerte", length = 20)
     private String alerte;
 
@@ -37,46 +40,45 @@ public class Parametre {
         return id_parametre;
     }
 
-
     public void setId_parametre(int id_parametre) {
         this.id_parametre = id_parametre;
     }
-
 
     public Statut getStatut1() {
         return statut1;
     }
 
-
     public void setStatut1(Statut statut1) {
         this.statut1 = statut1;
     }
-
 
     public Statut getStatut2() {
         return statut2;
     }
 
-
     public void setStatut2(Statut statut2) {
         this.statut2 = statut2;
     }
 
+    public double getDuree_travaille1() {
+        return duree_travaille1;
+    }
+
+    public void setDuree_travaille1(double duree_travaille1) {
+        this.duree_travaille1 = duree_travaille1;
+    }
 
     public double getDuree_travaille() {
         return duree_travaille;
     }
 
-
     public void setDuree_travaille(double duree_travaille) {
         this.duree_travaille = duree_travaille;
     }
 
-
     public String getAlerte() {
         return alerte;
     }
-
 
     public void setAlerte(String alerte) {
         this.alerte = alerte;

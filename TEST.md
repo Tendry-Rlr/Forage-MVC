@@ -12,4 +12,6 @@ lundi : 8 * 60
 mardi : 5 * 60 + 2 
 
 
-
+- intervalle dans le parametre : <=  
+- affichage liste demande avec son statut
+- somme dt total en heure : afficher si statut demande == Travail Termine 

@@ -110,25 +110,25 @@ public class DemandeService {
         // Trier par durée croissante
         liste.sort(Comparator.comparingDouble(Parametre::getDuree_travaille));
 
-        if (dt < liste.get(0).getDuree_travaille()) {
-            return "Pas d'alerte";
-        }
-        if (dt == liste.get(0).getDuree_travaille()) {
-            return liste.get(0).getAlerte();
-        }
-        
+        // if (dt < liste.get(0).getDuree_travaille()) {
+        // return "Pas d'alerte";
+        // }
+        // if (dt == liste.get(0).getDuree_travaille()) {
+        // return liste.get(0).getAlerte();
+        // }
+
         // Trouver le premier seuil dépassé
         for (int i = 1; i < liste.size(); i++) {
-            if (dt == liste.get(i).getDuree_travaille()) {
+            if (liste.get(i).getDuree_travaille() <= dt && dt <= liste.get(i).getDuree_travaille1()) {
                 return liste.get(i).getAlerte();
             }
-            if (dt < liste.get(i).getDuree_travaille()) {
-                return liste.get(i - 1).getAlerte();
-            }
+            // if (dt < liste.get(i).getDuree_travaille()) {
+            // return liste.get(i - 1).getAlerte();
+            // }
         }
 
         // Si dépasse tous les seuils
-        return liste.get(liste.size() - 1).getAlerte();
+        return "Pas d'alerte";
     }
 
     public double cumulDT(Integer id_demande, Integer id_statut1, Integer id_statut2) {

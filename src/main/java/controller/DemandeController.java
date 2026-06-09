@@ -131,9 +131,45 @@ public class DemandeController {
         }
     }
 
+    // @GetMapping("/listeDemande")
+    // public String listeDemandes(Model model) {
+    // model.addAttribute("demandes", demandeService.findAllWithStatuts());
+
+    // return "liste-demande";
+    // }
+
     @GetMapping("/listeDemande")
     public String listeDemandes(Model model) {
-        model.addAttribute("demandes", demandeService.findAllWithStatuts());
+        List<Demande> demandes = demandeService.findAllWithStatuts();
+        List<Double> sommeDT = new ArrayList<>();
+
+        double tsizy = -1;
+        for (Demande demande : demandes) {
+            DemandeStatut termine = demandeStatutService.findByDemandeStatutByStatut(demande.getId_demande(), 9);
+            if (termine == null) {
+                sommeDT.add(tsizy);
+            } else {
+                sommeDT.add(demandeStatutService.sommeDT(demande.getId_demande()));
+            }
+        }
+
+        // Récupérer les alertes pour chaque demande
+        Map<Integer, Map<Integer, String>> alertesParDemande = new HashMap<>();
+
+        for (Demande demande : demandes) {
+            List<DemandeAlerte> alertes = demandeService.demandeAlerte(demande.getId_demande());
+
+            Map<Integer, String> alerteParStatut = new HashMap<>();
+            for (DemandeAlerte alerte : alertes) {
+                DemandeStatut ds = alerte.getDemandeStatut();
+                alerteParStatut.put(ds.getId_demande_statut(), alerte.getAlerte());
+            }
+            alertesParDemande.put(demande.getId_demande(), alerteParStatut);
+        }
+
+        model.addAttribute("demandes", demandes);
+        model.addAttribute("alertesParDemande", alertesParDemande);
+        model.addAttribute("sommmeDT", sommeDT);
 
         return "liste-demande";
     }

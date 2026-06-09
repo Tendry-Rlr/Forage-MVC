@@ -42,3 +42,6 @@ insert into parametre(id_statut1, id_statut2, duree_travaille, alerte) values
 (1, 2, 200, 'Rouge'),
 (3, 5, 250, 'Tres rouge');
 
+/* Exemple d'insertion pour la date */
+INSERT INTO demande_statut (id_demande, date, id_statut, duree_travaille) 
+VALUES (19, '2026-06-09 08:00:00', 2, 20);

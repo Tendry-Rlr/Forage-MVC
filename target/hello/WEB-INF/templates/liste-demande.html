@@ -6,6 +6,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liste demande</title>
     <link rel="stylesheet" th:href="@{/ressources/css/style.css}">
+    <style>
+        .alerte-jaune { 
+            background-color: #fff3cd; 
+            color: #856404; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-weight: bold;
+            display: inline-block;
+        }
+        .alerte-rouge { 
+            background-color: #f8d7da; 
+            color: #721c24; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-weight: bold;
+            display: inline-block;
+        }
+        .alerte-vert { 
+            background-color: #d4edda; 
+            color: #155724; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-weight: bold;
+            display: inline-block;
+        }
+        .alerte-orange { 
+            background-color: #ffe5b4; 
+            color: #cc7000; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-weight: bold;
+            display: inline-block;
+        }
+        .pas-alerte { 
+            color: #6c757d; 
+            font-style: italic;
+        }
+        .somme-dt {
+            font-weight: bold;
+            color: #28a745;
+        }
+        .somme-dt-non-termine {
+            color: #dc3545;
+            font-style: italic;
+        }
+    </style>
 </head>
 
 <body>
@@ -14,38 +60,75 @@
     <div class="container">
         <div class="form-card">
             <div class="card-header">
-                <h4>Liste des demandes</h4>
+                <h4>Liste des demandes - ETU004029</h4>
             </div>
             <div class="card-body">
 
-    <table border="1">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Id demande</th>
+                            <th>Client</th>
+                            <th>Lieu</th>
+                            <th>Date</th>
+                            <th>Id demande Statut</th>
+                            <th>Statut</th>
+                            <th>Durée travaillée</th>
+                            <th>Alerte</th>
+                            <th>Somme DT</th>
+                        </thead>
+                    <tbody>
+                        <th:block th:each="demande, iterStat : ${demandes}">
+                            <tr th:each="demandeStatuts : ${demande.getDemandeStatuts()}">
+                                <td th:text="${demande.getId_demande()}">--</td>
+                                <td th:text="${demande.getClient().getNom_client()}">--</td>
+                                <td th:text="${demande.getLieu()}">--</td>
+                                <td th:text="${demandeStatuts.getDate()}">--</td>
+                                <td th:text="${demandeStatuts.getId_demande_statut()}">--</td>
+                                <td th:text="${demandeStatuts.getStatut().getSigne()}">--</td>
+                                <td th:text="${demandeStatuts.getDuree_travaille()}">--</td>
 
-        <tr>
-            <td>Id demande</td>
-            <td>Client</td>
-            <td>Lieu</td>
-            <td>Date</td>
-            <td>Statut</td>
-            <td>Action1</td>
-            <td>Action2</td>
-        </tr>
+                                <!-- Colonne Alerte -->
+                                <td>
+                                    <span th:if="${alertesParDemande != null 
+                                                     and alertesParDemande[demande.getId_demande()] != null 
+                                                     and alertesParDemande[demande.getId_demande()][demandeStatuts.getId_demande_statut()] != null}"
+                                          th:class="${#strings.contains(alertesParDemande[demande.getId_demande()][demandeStatuts.getId_demande_statut()], 'jaune') ? 'alerte-jaune' : 
+                                                    #strings.contains(alertesParDemande[demande.getId_demande()][demandeStatuts.getId_demande_statut()], 'rouge') ? 'alerte-rouge' :
+                                                    #strings.contains(alertesParDemande[demande.getId_demande()][demandeStatuts.getId_demande_statut()], 'vert') ? 'alerte-vert' :
+                                                    #strings.contains(alertesParDemande[demande.getId_demande()][demandeStatuts.getId_demande_statut()], 'tres rouge') ? 'alerte-rouge' : 'alerte-orange'}"
+                                          th:text="${alertesParDemande[demande.getId_demande()][demandeStatuts.getId_demande_statut()]}">
+                                    </span>
+                                    <span th:unless="${alertesParDemande != null 
+                                                       and alertesParDemande[demande.getId_demande()] != null 
+                                                       and alertesParDemande[demande.getId_demande()][demandeStatuts.getId_demande_statut()] != null}"
+                                          class="pas-alerte">Pas d'alerte</span>
+                                </td>
 
-        <th:block th:each="demande : ${demandes}">
-            <tr th:each="demandeStatuts : ${demande.getDemandeStatuts()}">
-                <td th:text="${demande.getId_demande()}"></td>
-                <td th:text="${demande.getClient().getNom_client()}"></td>
-                <td th:text="${demande.getLieu()}"></td>
-                <td th:text="${demandeStatuts.getDate()}"></td>
-                <td th:text="${demandeStatuts.getStatut().getSigne()}"></td>
-                <td><a th:href="@{/supprimer/{id}(id=${demande.getId_demande()})}">Supprimer</a></td>
-
-                <td th:if="${demandeStatuts.getStatut().getId_statut() == 2}"><a
-                        th:href="@{/voir-devis/{id_client}/{id_demande}(id_client=${demande.getClient().getId_client()}, id_demande=${demande.getId_demande()})}">Voir
-                        devis</a></td>
-                <td th:if="${demandeStatuts.getStatut().getId_statut() != 2}">Pas valide</a></td>
-            </tr>
-        </th:block>
-    </table>
+                                <!-- Colonne Somme DT -->
+                                <td>
+                                    <!-- Vérifier si la demande est terminée (statut 9) -->
+                                    <th:block th:with="sommeDtValue=${sommmeDT != null and iterStat.index < sommmeDT.size() ? sommmeDT[iterStat.index] : -1}">
+                                        <span th:if="${sommeDtValue != -1}" 
+                                              class="somme-dt"
+                                              th:text="${#numbers.formatDecimal(sommeDtValue, 1, 2)} + ' h'">
+                                        </span>
+                                        <span th:if="${sommeDtValue == -1}" 
+                                              class="somme-dt-non-termine">
+                                            En cours
+                                        </span>
+                                    </th:block>
+                                </td>
+                            </table>
+                        </th:block>
+                    </tbody>
+                </table>
+                
+                <!-- Message si aucune demande -->
+                <div th:if="${demandes == null or demandes.empty}" class="alert alert-info">
+                    Aucune demande trouvée.
+                </div>
+                
             </div>
         </div>
     </div>
