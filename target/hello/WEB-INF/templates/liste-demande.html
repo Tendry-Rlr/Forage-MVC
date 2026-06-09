@@ -28,7 +28,6 @@
             <td>Statut</td>
             <td>Action1</td>
             <td>Action2</td>
-            <td>Action3</td>
         </tr>
 
         <th:block th:each="demande : ${demandes}">
@@ -39,9 +38,7 @@
                 <td th:text="${demandeStatuts.getDate()}"></td>
                 <td th:text="${demandeStatuts.getStatut().getSigne()}"></td>
                 <td><a th:href="@{/supprimer/{id}(id=${demande.getId_demande()})}">Supprimer</a></td>
-                <td><a
-                        th:href="@{/update/{id_demande}/{id_demande_statut}(id_demande=${demande.getId_demande()},id_demande_statut=${demandeStatuts.getId_demande_statut()})}">Modifier</a>
-                </td>
+
                 <td th:if="${demandeStatuts.getStatut().getId_statut() == 2}"><a
                         th:href="@{/voir-devis/{id_client}/{id_demande}(id_client=${demande.getClient().getId_client()}, id_demande=${demande.getId_demande()})}">Voir
                         devis</a></td>

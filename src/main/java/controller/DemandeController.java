@@ -369,10 +369,14 @@ public class DemandeController {
 
             // Calculer l'alerte pour ce DemandeStatut (sauf le premier)
             String alerte = "Pas d'alerte";
+            int idstatut1 = 0, idstatut2 = 0;
             if (i > 0) {
                 DemandeStatut precedent = statutsDemande.get(i - 1);
                 double dtCumule = demandeService.cumulDT(id_demande, precedent.getStatut().getId_statut(),
                         ds.getStatut().getId_statut());
+
+                idstatut1 = precedent.getStatut().getId_statut();
+                idstatut2 = ds.getStatut().getId_statut();
 
                 List<Parametre> parametres = parametreService.findByStatuts(
                         precedent.getStatut().getId_statut(),
@@ -384,6 +388,8 @@ public class DemandeController {
             }
 
             row.put("alerte", alerte);
+            row.put("id_statut1", idstatut1);
+            row.put("id_statut2", idstatut2);
             resultat.add(row);
         }
 
